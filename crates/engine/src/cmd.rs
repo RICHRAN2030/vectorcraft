@@ -2,8 +2,8 @@
 
 pub(crate) mod appearance;
 mod assets;
-pub(crate) mod barcode;
 mod attributes;
+pub(crate) mod barcode;
 pub mod brushlib;
 mod brushsym;
 mod buildcmds;
