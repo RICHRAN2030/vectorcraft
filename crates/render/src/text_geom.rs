@@ -100,7 +100,7 @@ pub(crate) struct AlternateCandidate {
 /// alternates, and the features its characters turn on: stylistic sets, swashes, discretionary
 /// ligatures, figure styles…). What is left is what the script needs: `ccmp`, `locl`, `rlig`,
 /// Arabic's `init`, `medi`, `fina` and `isol`, the Indic and other complex scripts' required sets.
-fn required_shaping(t: &TextObject) -> std::collections::HashMap<(usize, usize), Vec<(u32, u32)>> {
+pub(crate) fn required_shaping(t: &TextObject) -> std::collections::HashMap<(usize, usize), Vec<(u32, u32)>> {
     let mut plain = t.clone();
     for run in &mut plain.runs {
         run.style.features = vec!["-liga".into(), "-calt".into()];
