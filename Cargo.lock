@@ -1310,7 +1310,6 @@ dependencies = [
  "egui-wgpu",
  "egui-winit",
  "egui_glow",
- "glow",
  "glutin",
  "glutin-winit",
  "image",
@@ -6036,7 +6035,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "arboard",
  "block2 0.6.2",
@@ -6077,7 +6076,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-affinity"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "crc32fast",
  "flate2",
@@ -6097,7 +6096,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-brush"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "kurbo 0.13.1",
  "serde",
@@ -6109,7 +6108,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-cad"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "kurbo 0.13.1",
@@ -6125,7 +6124,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-cli"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "log",
  "objc2-core-foundation",
@@ -6147,7 +6146,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-color"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "kurbo 0.13.1",
  "moxcms",
@@ -6159,7 +6158,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-doc"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "chrono",
  "hayro-ccitt",
@@ -6179,7 +6178,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-effects"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "kurbo 0.13.1",
@@ -6195,7 +6194,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-engine"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "craft-docpath",
  "crc32fast",
@@ -6235,7 +6234,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-eps"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "fax",
  "flate2",
@@ -6259,7 +6258,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-format"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "flate2",
  "proptest",
@@ -6274,7 +6273,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-geom"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "kurbo 0.13.1",
  "proptest",
@@ -6286,7 +6285,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-mcp"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "log",
@@ -6305,7 +6304,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-metafile"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "kurbo 0.13.1",
@@ -6319,7 +6318,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-pathops"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "kurbo 0.13.1",
  "linesweeper",
@@ -6331,7 +6330,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-pdf"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "aes",
  "chrono",
@@ -6362,7 +6361,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-plugins"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -6376,7 +6375,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-render"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "flate2",
  "gif",
@@ -6405,14 +6404,14 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-scriptcheck"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "proptest",
 ]
 
 [[package]]
 name = "vectorcraft-svg"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "craft-docpath",
  "flate2",
@@ -6437,7 +6436,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-testkit"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "fax",
  "image",
@@ -6455,7 +6454,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-text"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "harfrust 0.13.3",
  "icu_segmenter",
@@ -6476,7 +6475,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-three-d"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "vectorcraft-geom",
  "vectorcraft-pathops",
@@ -6484,7 +6483,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-tools"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "kurbo 0.13.1",
@@ -6500,7 +6499,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-trace"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "image",
  "kurbo 0.13.1",
@@ -6512,7 +6511,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-ui-egui"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "bytemuck",
  "craft-keymap",
@@ -6551,7 +6550,7 @@ dependencies = [
 
 [[package]]
 name = "vectorcraft-web"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "eframe",
  "egui",
@@ -7682,7 +7681,7 @@ checksum = "9440ea3e5aeabb0ac63af70daf835274065238cdd0cec83418f417eae38bacee"
 
 [[package]]
 name = "xtask"
-version = "0.17.0"
+version = "0.18.0"
 dependencies = [
  "serde_json",
 ]
