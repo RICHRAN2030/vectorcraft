@@ -125,8 +125,10 @@ fn arabic_joining_forms_are_not_alternates() {
 fn lam_alef_is_required(t: &vectorcraft_doc::text::TextObject) -> bool {
     let mut shaped: Vec<((usize, usize), u32)> = glyphs(t).into_iter().map(|(byte, len, gid)| ((byte, len), gid)).collect();
     shaped.sort_unstable();
-    let mut required: Vec<((usize, usize), u32)> =
-        crate::text_geom::required_shaping(t).into_iter().flat_map(|(cluster, glyphs)| glyphs.into_iter().map(move |(_, gid)| (cluster, gid))).collect();
+    let mut required: Vec<((usize, usize), u32)> = crate::text_geom::required_shaping(t)
+        .into_iter()
+        .flat_map(|(cluster, glyphs)| glyphs.into_iter().map(move |(_, gid)| (cluster, gid)))
+        .collect();
     required.sort_unstable();
     shaped == required
 }
