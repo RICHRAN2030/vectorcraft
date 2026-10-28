@@ -18,7 +18,7 @@ use vectorcraft_geom::{Affine, BezPath, PathData, Point};
 
 use super::create::{new_type_para, new_type_style};
 use super::typecmd::refresh_bounds;
-use super::*;
+use super::{CommandSpec, EngineError, Result, Session, bad, cmd, has_doc, has_selection, id_param, str_param};
 
 /// Millimetres to document points.
 const PT_PER_MM: f64 = 72.0 / 25.4;
