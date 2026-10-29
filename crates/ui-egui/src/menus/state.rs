@@ -156,8 +156,9 @@ pub(crate) fn waits_for_ime(app: &VectorcraftApp, id: &str) -> bool {
 }
 
 /// Engine commands that take `ids` and otherwise act on the Appearance panel's subject (the
-/// targeted layer, group or object, else the selection). Without `ids` and without a subject they
-/// are off, as the panel's buttons are: in menus, in the command palette and on their keys.
+/// targeted layer, group or object, else the selection). Without `ids` (or with an empty list) and
+/// without a subject they are off, as the panel's buttons are: in menus, in the command palette and
+/// on their keys.
 pub(super) const SUBJECT_COMMANDS: [&str; 2] = ["appearance.addFill", "appearance.addStroke"];
 
 /// Is there an Appearance panel subject: a targeted layer, group or object, or a selected one?
@@ -232,10 +233,15 @@ pub fn enabled(app: &VectorcraftApp, id: &str) -> bool {
         id if id.starts_with(crate::panels::symbols::USER_SLOT) => crate::panels::symbols::user_library(app, id).is_some(),
         "ui.saveBrushLibrary" => crate::panels::brushes::has_brushes(app),
         id if id.starts_with(crate::panels::brushes::USER_SLOT) => crate::panels::brushes::user_library(app, id).is_some(),
-        "ui.expandDialog" => app.session.active().is_some_and(|d| !d.selection.is_empty()),
+        // Dimmed for appearance attributes, which Expand Appearance expands first (#3089).
+        "ui.expandDialog" => {
+            app.session.active().is_some_and(|d| !d.selection.is_empty()) && !vectorcraft_engine::cmd::expand::has_appearance(&app.session)
+        }
         "ui.spotColors" => app.session.active().is_some(),
         "ui.menuDialog" => app.session.active().is_some_and(|d| !d.selection.is_empty()),
         "ui.simplifyAuto" | "ui.simplifyMoreOptions" => crate::dialogs::simplify_slider::showing(app),
+        "ui.smoothAuto" => crate::dialogs::smooth_slider::showing(app),
+        "ui.dialogReset" => crate::dialogs::can_reset(app),
         "ui.dxfOptionsDialog" => app.session.active().is_some(),
         "links.editOriginal" | "links.reveal" => selected_image(app, |im| im.link.is_some()) || selected_placed(app),
         "ui.placementOptionsDialog" => selected_image(app, |_| true) || selected_placed(app),

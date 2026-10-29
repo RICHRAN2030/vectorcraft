@@ -175,11 +175,11 @@ fn run_ui_part2(app: &mut VectorcraftApp, id: &str, p: &Value) -> Option<Result<
             crate::prefs_dialog::open(app, s("category").as_deref());
             Ok(Value::Null)
         }
-        // Edit → Color Settings… / Assign Profile… (no params): show the colour-management panel.
+        // Edit → Color Settings… / Assign Profile… (no params): show the colour-management panel
+        // wherever it is, as Window › Separations Preview does (it isn't in an icon column, so a
+        // flyout for it never opened: #4542).
         "edit.colorSettings" | "edit.assignProfile" if p.as_object().is_none_or(|o| o.is_empty()) => {
-            app.ui.open_panel = Some("separations".into());
-            app.ui.dock = true;
-            app.session.execute(id, p).map_err(|e| e.to_string())
+            crate::panel_docking::reveal_panel(app, "separations").and_then(|_| app.session.execute(id, p).map_err(|e| e.to_string()))
         }
         "view.outline" => flag(&mut app.ui.view.outline),
         _ => return None,
@@ -650,6 +650,7 @@ fn run_ui_part9(app: &mut VectorcraftApp, id: &str, p: &Value) -> Option<Result<
             crate::dialogs::flattener_presets::open(app, s("selected").as_deref());
             Ok(Value::Null)
         }
+        "ui.imageTracePresetDialog" => crate::dialogs::trace_presets::open(app, p),
         "ui.flattenerPreview" => crate::panels::flattener_preview::command(app, p),
         "window.graphicStyleLibrary" => crate::panels::graphic_styles::open_library(app, p),
         "ui.libraryPanel" => crate::panels::library_panel::command(app, p),
@@ -695,6 +696,8 @@ fn run_ui_part10(app: &mut VectorcraftApp, id: &str, p: &Value) -> Option<Result
         "ui.expandDialog" => crate::dialogs::expand::open(app),
         "ui.simplifyAuto" => crate::dialogs::simplify_slider::auto(app),
         "ui.simplifyMoreOptions" => crate::dialogs::simplify_slider::more_options(app),
+        "ui.smoothAuto" => crate::dialogs::smooth_slider::auto(app),
+        "ui.dialogReset" => crate::dialogs::reset(app),
         "attributes.openUrl" => crate::panels::attributes::open_url(app, p),
         "ui.javascriptFilesDialog" => crate::panels::svg_interactivity::files_dialog(app, p),
         "ui.spotColors" => crate::dialogs::spot_colors::open(app),
