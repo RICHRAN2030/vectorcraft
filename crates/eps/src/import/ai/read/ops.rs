@@ -77,8 +77,10 @@ impl<'a> Reader<'a> {
         if !matches!(w, "Xy" | "Xd" | "XW" | "BB" | "LB") {
             self.after_object = false;
             self.layer_state = None;
+            self.mesh_undo = None;
         }
         let group_ended = std::mem::take(&mut self.group_ended);
+        let mesh_ended = std::mem::take(&mut self.mesh_ended);
         let vals = self.operands();
         let vals = self.take_head(vals);
         // Only `Bh` reads an undefined number. Anywhere else it would reach a point or a size, so
@@ -201,7 +203,7 @@ impl<'a> Reader<'a> {
                 }
             }
             // Transparency and state.
-            "Xy" => self.transparency(&vals),
+            "Xy" => self.transparency(&vals, mesh_ended),
             // A group's own state (`Xd`, `6 () XW`) without an `Xy` keeps the current transparency, as
             // the file's PDF part draws it. A look's group (`9 () XW`) has no state of its own.
             "Xd" if group_ended => {
@@ -212,7 +214,13 @@ impl<'a> Reader<'a> {
             }
             "Xw" => self.gs.hidden = Self::nums(&vals).last() == Some(&1.0),
             "A" => self.gs.locked = Self::nums(&vals).last() == Some(&1.0),
-            "XW" => self.style_marker(&vals, hidden),
+            "XW" => {
+                // An object's own state block ends `6 () XW`: an `Xy` after a mesh's end was the mesh's.
+                if Self::nums(&vals).last() == Some(&6.0) && self.mesh_undo.take().is_some() {
+                    self.layer_state = None;
+                }
+                self.style_marker(&vals, hidden)
+            }
             // Gradients.
             "Bd" => self.gradient_def = GradientDef::begin(&vals),
             "Bs" | "BD" => {}
@@ -388,8 +396,10 @@ impl<'a> Reader<'a> {
         });
     }
 
-    /// `mode opacity isolate knockout shape Xy`; after a group's end, the group's too.
-    fn transparency(&mut self, vals: &[V]) {
+    /// `mode opacity isolate knockout shape Xy`; after a group's end, the group's too, and right
+    /// after a gradient mesh's `/End X!` (before its `Xd` and `6 () XW`), the mesh's, unless the
+    /// layer's `LB` follows: then it is the layer's (see `end_layer`).
+    fn transparency(&mut self, vals: &[V], mesh_ended: bool) {
         let n = Self::nums(vals);
         let [mode, opacity, rest @ ..] = n.as_slice() else { return };
         let gs = &mut self.gs;
@@ -403,7 +413,14 @@ impl<'a> Reader<'a> {
         };
         gs.knockout_shape = rest.get(2).is_some_and(|v| *v != 0.0);
         let gs = self.gs.clone();
-        if self.last_object().is_some_and(|n| matches!(n.kind, NodeKind::Group { .. } | NodeKind::Compound { .. })) {
+        let in_layer = matches!(self.frames.last(), Some(Frame { kind: Kind::Layer(_), .. }));
+        if let Some(n) = self.last_object().filter(|n| mesh_ended && matches!(n.kind, NodeKind::Mesh(_))) {
+            // The mesh's, or the layer's when it is the layer's last object: kept for either.
+            let before = (n.opacity, n.blend, n.isolate, n.knockout);
+            (n.opacity, n.blend, n.isolate, n.knockout) = (gs.opacity, gs.blend, gs.isolate, gs.knockout);
+            self.mesh_undo = Some(before);
+            self.layer_state = in_layer.then_some((gs.opacity, gs.blend, gs.isolate, gs.knockout));
+        } else if self.last_object().is_some_and(|n| matches!(n.kind, NodeKind::Group { .. } | NodeKind::Compound { .. })) {
             if let Some(n) = self.last_object() {
                 n.opacity = gs.opacity;
                 n.blend = gs.blend;
@@ -415,8 +432,7 @@ impl<'a> Reader<'a> {
             // After a layer's art and before its `LB`: the layer's own state (#2003). Kept until
             // an operator that isn't part of the state block (or the `LB` that takes it) says the
             // art moves on, so a path's state before its paint isn't read as its layer's.
-            self.layer_state =
-                matches!(self.frames.last(), Some(Frame { kind: Kind::Layer(_), .. })).then_some((gs.opacity, gs.blend, gs.isolate, gs.knockout));
+            self.layer_state = in_layer.then_some((gs.opacity, gs.blend, gs.isolate, gs.knockout));
         }
     }
 

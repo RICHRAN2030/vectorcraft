@@ -1,7 +1,7 @@
 use super::artboards::{artboard_name_at, begin_artboard_name_edit, name_press_id, select_named_artboard};
 use super::drag::{
     HoverContext, apply_requests, dispatch, drag_art_out, drag_id, drag_layer_id, drag_pos_id, drop_press, mods, on_canvas, pen_pressure,
-    tool_drag_doc_id, tool_drag_moved, tool_frame_moves, tool_holds, tool_press_doc_id,
+    tool_drag_doc_id, tool_drag_mods_changed, tool_drag_moved, tool_frame_moves, tool_holds, tool_press_doc_id,
 };
 use super::view::{
     HOLD_DELAY, HOLD_ZOOM, SCRUB_SLOP, SCRUB_ZOOM, WheelTurn, animated_zoom, pan_pixels, rotate_about, scroll_view, touch_gestures, trackpad_turn,
@@ -81,9 +81,12 @@ pub(super) fn handle_input(app: &mut VectorcraftApp, ui: &Ui, resp: &egui::Respo
     let middle_pan = matches!(drag, Some(Drag::Pan { middle: true, .. }));
     // egui counts a press a few pixels outside the canvas as on it (its interaction radius): only a
     // press on the canvas itself reaches the tools, else it would land at the canvas's centre.
+    // A finger pressing with others down, or with another landing in its frame, presses nothing
+    // (`touch_gestures` made the press a gesture, #4198).
     if pointer.primary_pressed()
         && resp.hovered()
         && !middle_pan
+        && drag != Some(Drag::Gesture)
         && let Some(p) = at
     {
         ui.ctx().memory_mut(|mem| mem.stop_text_input());
@@ -91,7 +94,15 @@ pub(super) fn handle_input(app: &mut VectorcraftApp, ui: &Ui, resp: &egui::Respo
         // The artboard's name sits above its corner. A press there renames on a double-click
         // and does not start a tool gesture (a fitted artboard, a new one, Artboard Options).
         if let Some(i) = artboard_name_at(app, ui, &xf, p) {
-            ui.data_mut(|dd| dd.insert_temp(name_press_id(), i));
+            let press_shift = ui
+                .input(|inp| {
+                    inp.events.iter().rev().find_map(|event| match event {
+                        egui::Event::PointerButton { button: egui::PointerButton::Primary, pressed: true, modifiers, .. } => Some(modifiers.shift),
+                        _ => None,
+                    })
+                })
+                .unwrap_or(m.shift);
+            ui.data_mut(|dd| dd.insert_temp(name_press_id(), (i, press_shift)));
         } else {
             begin_drag(app, ui, &f, p);
         }
@@ -134,9 +145,17 @@ pub(super) fn handle_input(app: &mut VectorcraftApp, ui: &Ui, resp: &egui::Respo
         ui.ctx().request_repaint_after(std::time::Duration::from_millis(16));
     }
     if pointer.primary_released()
-        && let Some(i) = ui.data_mut(|d| d.remove_temp::<usize>(name_press_id()))
+        && let Some((i, shift)) = ui.data_mut(|d| d.remove_temp::<(usize, bool)>(name_press_id()))
     {
-        select_named_artboard(app, i);
+        let release_shift = ui
+            .input(|inp| {
+                inp.events.iter().rev().find_map(|event| match event {
+                    egui::Event::PointerButton { button: egui::PointerButton::Primary, pressed: false, modifiers, .. } => Some(modifiers.shift),
+                    _ => None,
+                })
+            })
+            .unwrap_or(m.shift);
+        select_named_artboard(app, i, shift || release_shift);
     }
     if resp.double_clicked()
         && let Some(p) = at
@@ -342,7 +361,8 @@ fn drag_held(app: &mut VectorcraftApp, ui: &Ui, f: &Pointing, d: Drag, p: Pos2) 
             // the last position only, so a costly drag preview runs once a frame.
             let moves = tool_frame_moves(ui, app);
             // A frame whose pointer ends where the last one did still moved in between.
-            if tool_drag_moved(ui, &xf, p, pointer) || !moves.is_empty() {
+            let mods_changed = tool_drag_mods_changed(ui, mods(m, space));
+            if tool_drag_moved(ui, &xf, p, pointer) || mods_changed || !moves.is_empty() {
                 for (at, force) in moves {
                     let pressure = force.unwrap_or_else(|| pen_pressure(ui, app, false));
                     dispatch(app, &PointerEvent { kind: PointerKind::Drag, pos: xf.to_doc(at), mods: mods(m, space), pressure }, view);

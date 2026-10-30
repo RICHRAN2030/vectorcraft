@@ -1,5 +1,67 @@
 use super::*;
 
+#[test]
+fn named_panel_default_chords_toggle_their_panels() {
+    let keymap = crate::keymap::keymap_with(&craft_keymap::Overrides::new());
+    for (panel, chord) in [
+        ("brushes", "F5"),
+        ("color", "F6"),
+        ("layers", "F7"),
+        ("graphicStyles", "Shift+F5"),
+        ("appearance", "Shift+F6"),
+        ("align", "Shift+F7"),
+        ("transform", "Shift+F8"),
+        ("info", "Cmd+F8"),
+        ("gradient", "Cmd+F9"),
+        ("pathfinder", "Cmd+Shift+F9"),
+        ("stroke", "Cmd+F10"),
+        ("transparency", "Cmd+Shift+F10"),
+        ("attributes", "Cmd+F11"),
+        ("symbols", "Cmd+Shift+F11"),
+    ] {
+        let chord = crate::keymap::vc_chord(chord).unwrap();
+        let hit = crate::keymap::lookup(&keymap, &chord).unwrap();
+        assert_eq!(hit.id, "window.panel");
+        assert_eq!(hit.params["panel"], panel);
+        assert_eq!(shortcut_params(&hit)["toggle"], true);
+        assert_eq!(shortcut_params(&hit)["toggleGroup"], true);
+    }
+}
+
+#[test]
+fn other_panel_shortcuts_keep_plain_panel_params() {
+    for panel in ["character", "swatches"] {
+        let hit = CommandRef { id: "window.panel".into(), params: json!({"panel": panel}) };
+        let params = shortcut_params(&hit);
+        assert!(params.get("toggle").is_none(), "{panel} gained toggle");
+        assert!(params.get("toggleGroup").is_none(), "{panel} gained toggleGroup");
+    }
+}
+
+#[test]
+fn rebound_layers_chord_toggles_and_plain_panel_command_reveals() {
+    let mut overrides = craft_keymap::Overrides::new();
+    crate::keymap::set_override(&mut overrides, "panel:layers", "Cmd+Alt+Shift+F7");
+    let keymap = crate::keymap::keymap_with(&overrides);
+    let old = crate::keymap::vc_chord("F7").unwrap();
+    assert!(crate::keymap::lookup(&keymap, &old).is_none(), "the old F7 is free");
+    let rebound = crate::keymap::vc_chord("Cmd+Alt+Shift+F7").unwrap();
+    let hit = crate::keymap::lookup(&keymap, &rebound).unwrap();
+    assert_eq!(hit.id, "window.panel");
+    assert_eq!(hit.params["panel"], "layers");
+
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.run("file.new", json!({"width": 400, "height": 300})).unwrap();
+    app.run("window.panel", json!({"panel": "layers"})).unwrap();
+    let ctx = egui::Context::default();
+    run_hit(&mut app, &ctx, &hit);
+    assert_eq!(crate::menus::checked(&app, "window.panel", &json!({"panel": "layers"})), Some(false));
+    run_hit(&mut app, &ctx, &hit);
+    assert_eq!(crate::menus::checked(&app, "window.panel", &json!({"panel": "layers"})), Some(true));
+    app.run("window.panel", json!({"panel": "layers"})).unwrap();
+    assert_eq!(crate::menus::checked(&app, "window.panel", &json!({"panel": "layers"})), Some(true), "a plain command still reveals");
+}
+
 /// One headless frame delivering `events` to the shortcut handler.
 fn frame(app: &mut VectorcraftApp, events: Vec<egui::Event>) -> egui::FullOutput {
     let ctx = egui::Context::default();
@@ -234,6 +296,46 @@ fn cmd_alt_shift_3_hides_unselected_artwork() {
     assert_eq!(shown(&app), [true, true], "nothing is hidden in isolation mode");
 }
 
+/// Cmd+Alt+Shift+J opens Average & Join's dialog, Points: Corner the first time. Cancel changes
+/// nothing; OK averages the selected lines' nearest ends and joins them there; the dialog opens
+/// again on the choice confirmed last.
+#[test]
+fn cmd_alt_shift_j_opens_average_and_join() {
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+    assert_eq!(crate::menus::shortcut_of("path.averageJoin"), Some("Cmd+Alt+Shift+J"));
+    let line = |app: &mut VectorcraftApp, x1: f64, x2: f64| {
+        app.session.execute("shape.line", &json!({"x1": x1, "y1": 10, "x2": x2, "y2": 10})).unwrap()["id"].as_u64().unwrap()
+    };
+    let (a, b) = (line(&mut app, 10.0, 50.0), line(&mut app, 60.0, 100.0));
+    app.session.execute("select.set", &json!({"ids": [a, b]})).unwrap();
+    let before = app.session.doc().unwrap().doc.clone();
+    let j = || egui::Event::Key {
+        key: Key::J,
+        physical_key: None,
+        pressed: true,
+        repeat: false,
+        modifiers: Modifiers::COMMAND | Modifiers::ALT | Modifiers::SHIFT,
+    };
+    frame(&mut app, vec![j()]);
+    let d = app.ui.dialog.as_ref().expect("the dialog opened");
+    assert_eq!((d.kind.as_str(), d.str("to").as_str()), ("averageJoin", "corner"));
+    crate::dialogs::cancel(&mut app);
+    assert!(app.ui.dialog.is_none());
+    assert_eq!(app.session.doc().unwrap().doc, before, "Cancel changes nothing");
+    frame(&mut app, vec![j()]);
+    app.ui.dialog.as_mut().expect("the dialog opened again").fields.insert("to".into(), json!("smooth"));
+    crate::dialogs::confirm(&mut app).unwrap();
+    assert!(app.ui.dialog.is_none());
+    let doc = &app.session.doc().unwrap().doc;
+    assert!(doc.node(vectorcraft_doc::NodeId(b)).is_none(), "joined into one path");
+    let path = doc.node(vectorcraft_doc::NodeId(a)).unwrap().path_data().unwrap();
+    let pts: Vec<(f64, f64)> = path.subpaths[0].anchors.iter().map(|x| (x.p.x, x.p.y)).collect();
+    assert_eq!(pts, [(10.0, 10.0), (55.0, 10.0), (100.0, 10.0)]);
+    frame(&mut app, vec![j()]);
+    assert_eq!(app.ui.dialog.as_ref().map(|d| d.str("to")).as_deref(), Some("smooth"), "the choice confirmed last");
+}
+
 /// Cmd+Shift+B while the Type tool edits text is Type › Bold, not Hide Bounding Box (#724).
 #[test]
 fn cmd_shift_b_while_typing_is_bold_not_the_bounding_box() {
@@ -323,6 +425,39 @@ fn cmd_alt_q_resets_tracking_and_kerning() {
     assert_eq!(spacing(&mut app), [(json!("One "), json!(200.0), json!(-40.0)), (json!("Two"), json!(0.0), json!(null))]);
 }
 
+/// Cmd+Alt+K highlights the Character panel's Kerning field and Cmd+Alt+Shift+F highlights its
+/// font name field for the selected type, and Cmd+Alt+K also does so while the Type tool edits
+/// text. Cmd+Alt+K does not open Preferences (Cmd+K).
+#[test]
+fn cmd_alt_k_and_cmd_alt_shift_f_highlight_the_character_fields() {
+    use crate::panels::character::Field;
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+    let id = app.session.execute("text.create", &json!({"x": 20, "y": 50, "text": "One Two"})).unwrap()["id"].as_u64().unwrap();
+    let chord = |key, m| egui::Event::Key { key, physical_key: None, pressed: true, repeat: false, modifiers: m };
+    app.session.execute("select.set", &json!({"ids": [id]})).unwrap();
+    frame(&mut app, vec![chord(Key::K, Modifiers::COMMAND | Modifiers::ALT)]);
+    assert_eq!(app.character_focus, Some(Field::Kerning));
+    assert!(app.ui.dialog.is_none(), "not Preferences");
+    assert!(crate::panel_docking::showing(&app.ui, "character"));
+    frame(&mut app, vec![chord(Key::F, Modifiers::COMMAND | Modifiers::ALT | Modifiers::SHIFT)]);
+    assert_eq!(app.character_focus, Some(Field::FontName));
+    // While the Type tool edits text.
+    app.character_focus = None;
+    app.select_tool("type");
+    app.session.apply_actions(vec![vectorcraft_tools::Action::Notify("text.editNew".into())]).unwrap();
+    app.session.set_tool_option("select", &json!({"start": 4, "end": 7}));
+    assert!(app.session.tool_wants_text());
+    frame(&mut app, vec![chord(Key::K, Modifiers::COMMAND | Modifiers::ALT)]);
+    assert_eq!(app.character_focus, Some(Field::Kerning));
+    assert!(app.ui.dialog.is_none(), "not Preferences");
+    // Keyboard Shortcuts lists all three under Type; Highlight Tracking has no default key.
+    for id in ["type.highlightFontName", "type.highlightKerning", "type.highlightTracking"] {
+        assert_eq!(crate::shortcut_editor::entry(id).map(|e| e.group.as_str()), Some("Type"), "{id}");
+    }
+    assert_eq!(crate::menus::shortcut_of("type.highlightTracking"), None);
+}
+
 /// Cmd+Shift+X resets the horizontal scale of the selected type to 100%, and of the Type
 /// tool's selected text while it edits. egui reports the chord as a Cut with Shift held, and
 /// the type object is not cut.
@@ -349,6 +484,70 @@ fn cmd_shift_x_resets_horizontal_scale() {
     assert!(app.session.tool_wants_text());
     frame(&mut app, chord);
     assert_eq!(scales(&mut app), [(json!("One "), json!(150.0)), (json!("Two"), json!(100.0))]);
+}
+
+/// Cmd+Shift+U underlines the selected type and removes the underline again, Cmd+Alt+Shift+C
+/// switches its paragraphs between the Single-line and the Every-line Composer, and
+/// Cmd+Alt+Shift+H turns their hyphenation on and off. While the Type tool edits text, they act on
+/// its selection and the paragraphs it touches. Smart Guides (Cmd+U), Copy (Cmd+C) and Hide
+/// Artboards (Cmd+Shift+H) stay as they are.
+#[test]
+fn cmd_shift_u_and_cmd_alt_shift_c_and_h_toggle_type_formats() {
+    use vectorcraft_doc::Composer;
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+    let id = app.session.execute("text.create", &json!({"x": 20, "y": 50, "text": "One\nTwo"})).unwrap()["id"].as_u64().unwrap();
+    let underlines = |app: &mut VectorcraftApp| {
+        let r = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+        r["runs"].as_array().unwrap().iter().map(|run| (run["text"].clone(), run["style"]["underline"].clone())).collect::<Vec<_>>()
+    };
+    let paras = |app: &VectorcraftApp| match &app.session.active().unwrap().doc.node(vectorcraft_doc::NodeId(id)).unwrap().kind {
+        vectorcraft_doc::NodeKind::Text(t) => (0..t.paragraph_count()).map(|i| (t.para_at(i).composer, t.para_at(i).hyphenate)).collect::<Vec<_>>(),
+        _ => panic!("text"),
+    };
+    let chord =
+        |key, m: Modifiers| vec![egui::Event::Key { key, physical_key: None, pressed: true, repeat: false, modifiers: Modifiers::COMMAND | m }];
+    let (shift, alt_shift) = (Modifiers::SHIFT, Modifiers::ALT | Modifiers::SHIFT);
+    let (guides, artboards) = (app.ui.view.smart_guides, app.ui.view.artboards);
+    assert!(app.session.clipboard.is_empty());
+    app.session.execute("select.set", &json!({"ids": [id]})).unwrap();
+    let hyphenate = paras(&app)[0].1;
+    frame(&mut app, chord(Key::U, shift));
+    assert_eq!(underlines(&mut app), [(json!("One\nTwo"), json!(true))]);
+    frame(&mut app, chord(Key::U, shift));
+    assert_eq!(underlines(&mut app), [(json!("One\nTwo"), json!(false))]);
+    frame(&mut app, chord(Key::C, alt_shift));
+    assert_eq!(paras(&app), [(Composer::SingleLine, hyphenate); 2]);
+    frame(&mut app, chord(Key::C, alt_shift));
+    assert_eq!(paras(&app), [(Composer::EveryLine, hyphenate); 2]);
+    frame(&mut app, chord(Key::H, alt_shift));
+    assert_eq!(paras(&app), [(Composer::EveryLine, !hyphenate); 2]);
+    frame(&mut app, chord(Key::H, alt_shift));
+    assert_eq!(paras(&app), [(Composer::EveryLine, hyphenate); 2]);
+    assert_eq!((app.ui.view.smart_guides, app.ui.view.artboards, app.session.clipboard.is_empty()), (guides, artboards, true));
+    // While the Type tool edits: its selected text, and the paragraph that text is in.
+    app.select_tool("type");
+    app.session.apply_actions(vec![vectorcraft_tools::Action::Notify("text.editNew".into())]).unwrap();
+    app.session.set_tool_option("select", &json!({"start": 4, "end": 7}));
+    assert!(app.session.tool_wants_text());
+    for (key, m) in [(Key::U, shift), (Key::C, alt_shift), (Key::H, alt_shift)] {
+        frame(&mut app, chord(key, m));
+    }
+    assert_eq!(underlines(&mut app), [(json!("One\n"), json!(false)), (json!("Two"), json!(true))]);
+    assert_eq!(paras(&app), [(Composer::EveryLine, hyphenate), (Composer::SingleLine, !hyphenate)]);
+    // Paragraphs with different composers and hyphenation take the Every-line Composer and
+    // hyphenation, as the Hyphenate checkbox turns it on for them.
+    app.select_tool("selection");
+    app.session.execute("select.set", &json!({"ids": [id]})).unwrap();
+    for (key, m) in [(Key::C, alt_shift), (Key::H, alt_shift)] {
+        frame(&mut app, chord(key, m));
+    }
+    assert_eq!(paras(&app), [(Composer::EveryLine, true); 2]);
+    // Nothing selected: nothing to change.
+    app.session.execute("select.none", &json!({})).unwrap();
+    for id in ["type.underline", "type.lineComposer", "type.hyphenate"] {
+        assert!(!crate::menus::enabled(&app, id), "{id}");
+    }
 }
 
 /// Tab shows and hides the panels, and in the Type tool it types a tab, without moving the
@@ -955,6 +1154,104 @@ fn cmd_alt_shift_period_and_comma_step_the_font_size_by_five() {
     assert!(app.session.tool_wants_text());
     frame(&mut app, vec![press(Key::Period, five)]);
     assert_eq!(sizes(&mut app), [(json!("One "), json!(14.0)), (json!("Two"), json!(24.0))]);
+}
+
+/// Spacing arrow keys change tracking, leading, and baseline shift for a selected vertical text object.
+#[test]
+fn alt_arrows_rotate_for_selected_vertical_type() {
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+    let vertical = app.session.execute("text.create", &json!({"x": 20, "y": 50, "text": "One Two", "size": 20, "vertical": true})).unwrap()["id"]
+        .as_u64()
+        .unwrap();
+    app.select_tool("selection");
+    app.session.execute("select.set", &json!({"ids": [vertical]})).unwrap();
+    let press = |key, modifiers| egui::Event::Key { key, physical_key: None, pressed: true, repeat: false, modifiers };
+    let cases = [
+        (Key::ArrowDown, Modifiers::ALT, "tracking", 20.0),
+        (Key::ArrowUp, Modifiers::ALT, "tracking", 0.0),
+        (Key::ArrowLeft, Modifiers::ALT, "leading", 26.0),
+        (Key::ArrowRight, Modifiers::ALT, "leading", 24.0),
+        (Key::ArrowRight, Modifiers::ALT | Modifiers::SHIFT, "baseline_shift", 2.0),
+        (Key::ArrowLeft, Modifiers::ALT | Modifiers::SHIFT, "baseline_shift", 0.0),
+        (Key::ArrowDown, Modifiers::ALT | Modifiers::COMMAND, "tracking", 100.0),
+        (Key::ArrowUp, Modifiers::ALT | Modifiers::COMMAND, "tracking", 0.0),
+    ];
+    for (key, modifiers, field, value) in cases {
+        frame(&mut app, vec![egui::Event::ModifiersChanged(modifiers), press(key, modifiers)]);
+        let range = app.session.execute("text.getRange", &json!({"id": vertical})).unwrap();
+        assert_eq!(range["runs"][0]["style"][field], json!(value), "{key:?}");
+        assert_eq!(app.session.active().unwrap().selection.objects, [vectorcraft_doc::NodeId(vertical)]);
+    }
+}
+
+#[test]
+fn mixed_type_objects_take_horizontal_spacing_chords_in_both_orders() {
+    let press = |key, modifiers| egui::Event::Key { key, physical_key: None, pressed: true, repeat: false, modifiers };
+    for vertical_first in [true, false] {
+        let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+        app.session.execute("file.new", &json!({"width": 200, "height": 200})).unwrap();
+        let vertical = app.session.execute("text.create", &json!({"x": 20, "y": 50, "text": "One", "size": 20, "vertical": true})).unwrap()["id"]
+            .as_u64()
+            .unwrap();
+        let horizontal = app.session.execute("text.create", &json!({"x": 80, "y": 50, "text": "Two", "size": 20})).unwrap()["id"].as_u64().unwrap();
+        let ids = if vertical_first { [vertical, horizontal] } else { [horizontal, vertical] };
+        app.select_tool("type");
+        app.session.execute("select.set", &json!({"ids": ids})).unwrap();
+        let before = app.session.active().unwrap().history.undo.len();
+        let original = ids.map(|id| app.session.execute("text.getRange", &json!({"id": id})).unwrap());
+        frame(&mut app, vec![egui::Event::ModifiersChanged(Modifiers::ALT), press(Key::ArrowDown, Modifiers::ALT)]);
+        for id in ids {
+            let range = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+            assert_eq!(range["runs"][0]["style"]["leading"], json!(26.0));
+        }
+        assert_eq!(app.session.active().unwrap().history.undo.len(), before + 1);
+        assert_eq!(app.session.active().unwrap().selection.objects.len(), 2);
+        app.session.execute("edit.undo", &json!({})).unwrap();
+        for (id, expected) in ids.into_iter().zip(original) {
+            let range = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+            assert_eq!(range, expected);
+        }
+        app.session.execute("edit.redo", &json!({})).unwrap();
+        for id in ids {
+            let range = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+            assert_eq!(range["runs"][0]["style"]["leading"], json!(26.0));
+        }
+        frame(&mut app, vec![egui::Event::ModifiersChanged(Modifiers::ALT), press(Key::ArrowRight, Modifiers::ALT)]);
+        for id in ids {
+            let range = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+            assert_eq!(range["runs"][0]["style"]["tracking"], json!(20.0));
+        }
+        assert_eq!(app.session.active().unwrap().selection.objects.len(), 2);
+    }
+}
+
+#[test]
+fn selected_vertical_area_and_path_type_use_vertical_spacing_chords() {
+    let mut app = VectorcraftApp::new(vectorcraft_engine::Session::new(), Default::default());
+    app.session.execute("file.new", &json!({"width": 300, "height": 300})).unwrap();
+    let area_frame = app.session.execute("path.create", &json!({"d": "M10 10 L100 10 L100 100 L10 100 Z"})).unwrap()["id"].as_u64().unwrap();
+    let path = app.session.execute("path.create", &json!({"d": "M150 10 L250 10"})).unwrap()["id"].as_u64().unwrap();
+    let area =
+        app.session.execute("text.createInPath", &json!({"path": area_frame, "mode": "area", "text": "Area", "vertical": true, "size": 20})).unwrap()
+            ["id"]
+            .as_u64()
+            .unwrap();
+    let on_path = app
+        .session
+        .execute("text.createInPath", &json!({"path": path, "mode": "onPath", "text": "Path", "vertical": true, "size": 20}))
+        .unwrap()["id"]
+        .as_u64()
+        .unwrap();
+    app.select_tool("selection");
+    app.session.execute("select.set", &json!({"ids": [area, on_path]})).unwrap();
+    let modifiers = Modifiers::ALT;
+    let press = egui::Event::Key { key: Key::ArrowDown, physical_key: None, pressed: true, repeat: false, modifiers };
+    frame(&mut app, vec![egui::Event::ModifiersChanged(modifiers), press]);
+    for id in [area, on_path] {
+        let range = app.session.execute("text.getRange", &json!({"id": id})).unwrap();
+        assert_eq!(range["runs"][0]["style"]["tracking"], json!(20.0));
+    }
 }
 
 /// #3786: Alt+arrows step a selected text object's spacing instead of copying and nudging it.

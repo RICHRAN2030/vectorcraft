@@ -24,6 +24,22 @@ use typing::is_shortcut_chord;
 pub(crate) use typing::keep_marked_text;
 use typing::{drop_typing_presses, type_text};
 
+fn text_focus_frame_id() -> egui::Id {
+    egui::Id::unique("shortcut-text-focus-frame")
+}
+
+pub(crate) fn remember_text_focus(ctx: &egui::Context) {
+    if ctx.egui_wants_keyboard_input() {
+        let frame = ctx.cumulative_frame_nr_for(ctx.viewport_id());
+        ctx.data_mut(|d| d.insert_temp(text_focus_frame_id(), frame));
+    }
+}
+
+fn text_focused_in_previous_frame(ctx: &egui::Context) -> bool {
+    let previous = ctx.cumulative_frame_nr_for(ctx.viewport_id()).checked_sub(1);
+    ctx.data(|d| d.get_temp::<u64>(text_focus_frame_id())) == previous
+}
+
 /// Parse "Cmd+Shift+]" into an egui shortcut. `Cmd` is Command on macOS and Ctrl elsewhere.
 /// `+` and `=` name one chord key ([`Key::Equals`]): `+` is Shift+`=` on many layouts, so a
 /// `Cmd+=` chord also answers `+` however it is typed.
@@ -189,9 +205,11 @@ pub fn handle(app: &mut VectorcraftApp, ctx: &egui::Context) {
         presentation_keys(app, ctx, escape_pair);
         return;
     }
+    let escape_held_by_drag =
+        crate::canvas::dragging(ctx) || crate::canvas::ruler_origin_dragging(ctx) || crate::tools_float::escape_cancelled_move(ctx);
     let typing = ctx.egui_wants_keyboard_input();
     // Escape closes Edit Toolbar's drawer first (egui drops a drag from it on Escape already).
-    if app.ui.tools_drawer && !typing && ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::Escape)) {
+    if app.ui.tools_drawer && !typing && !escape_held_by_drag && ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::Escape)) {
         app.ui.tools_drawer = false;
     }
     let view = app.view_info();
@@ -232,7 +250,7 @@ pub fn handle(app: &mut VectorcraftApp, ctx: &egui::Context) {
                 ctx.input_mut(|i| i.consume_key(Modifiers::NONE, k));
                 ctx.input_mut(|i| i.consume_key(Modifiers::SHIFT, k));
             }
-            if k == Key::Escape && !busy && !claimed {
+            if k == Key::Escape && !busy && !claimed && !escape_held_by_drag {
                 if app.session.active().is_some_and(|d| d.doc.pattern_edit.is_some()) {
                     let _ = app.run("object.pattern.done", json!({}));
                 } else if app.session.active().is_some_and(|d| d.isolation.is_some()) {
@@ -245,6 +263,16 @@ pub fn handle(app: &mut VectorcraftApp, ctx: &egui::Context) {
                     // Escape pressed twice resets a rotated view (with the Rotate View tool, once).
                     let _ = app.run("view.rotateReset", json!({}));
                     escape_pair = None;
+                } else if matches!(app.ui.screen_mode, 1 | 2)
+                    && !egui::Popup::is_any_open(ctx)
+                    && !text_focused_in_previous_frame(ctx)
+                    && ctx.input(|i| {
+                        i.events.iter().any(|e| {
+                            matches!(e, egui::Event::Key { key: Key::Escape, pressed: true, repeat: false, modifiers, .. } if *modifiers == Modifiers::NONE)
+                        })
+                    })
+                {
+                    let _ = app.run("view.screenMode", json!({ "mode": 0 }));
                 }
             }
             // An Escape that ended something can start a pair too. One that closed a popup cannot.
@@ -353,7 +381,7 @@ fn single_key_shortcuts(app: &mut VectorcraftApp, ctx: &egui::Context) {
             None if hit.params.is_null() => {
                 let _ = app.run(&hit.id, json!({}));
             }
-            None => crate::menus::invoke(app, &hit.id, hit.params.clone()),
+            None => crate::menus::invoke(app, &hit.id, shortcut_params(hit)),
         }
     }
 }
@@ -361,19 +389,28 @@ fn single_key_shortcuts(app: &mut VectorcraftApp, ctx: &egui::Context) {
 /// Route Alt+arrows to spacing controls when text objects are selected.
 fn alt_type_arrows(app: &mut VectorcraftApp, ctx: &egui::Context) -> bool {
     let m = ctx.input(|i| i.modifiers);
-    if !m.alt
-        || !app.session.active().is_some_and(|st| {
-            st.selection.guides.is_empty()
-                && !st.selection.objects.is_empty()
-                && st.selection.objects.iter().all(|id| matches!(st.doc.node(*id).map(|n| &n.kind), Some(vectorcraft_doc::NodeKind::Text(_))))
-        })
-    {
+    if !m.alt {
         return false;
     }
+    let orientation = app.session.active().and_then(|st| {
+        if !st.selection.guides.is_empty() || st.selection.objects.is_empty() {
+            return None;
+        }
+        let mut all_vertical = true;
+        for id in &st.selection.objects {
+            let node = st.doc.node(*id)?;
+            let vectorcraft_doc::NodeKind::Text(t) = &node.kind else { return None };
+            all_vertical &= t.vertical;
+        }
+        Some(all_vertical)
+    });
+    let Some(vertical) = orientation else {
+        return false;
+    };
     let keys = [(Key::ArrowLeft, ToolKey::Left), (Key::ArrowRight, ToolKey::Right), (Key::ArrowUp, ToolKey::Up), (Key::ArrowDown, ToolKey::Down)];
     for (key, tool_key) in keys {
         if ctx.input_mut(|i| i.consume_key(m, key)) {
-            if let Some((attribute, by)) = vectorcraft_tools::text::step_key(tool_key, m.shift, false) {
+            if let Some((attribute, by)) = vectorcraft_tools::text::step_key(tool_key, m.shift, false, vertical) {
                 let by = if m.command { by * 5.0 } else { by };
                 let _ = app.run("type.step", json!({"attribute": attribute, "by": by}));
             }
@@ -541,6 +578,10 @@ fn busy_tool_keys(app: &mut VectorcraftApp, ctx: &egui::Context, view: ViewInfo)
     for d in digits {
         let _ = app.session.tool_key(ToolKey::Digit(d), Mods::default(), view);
     }
+    // Tab, when the tool takes it (the Smart Pen Tool placing an anchor).
+    if app.session.tool_claims_key(ToolKey::Tab, view) && ctx.input_mut(|i| i.consume_key(Modifiers::NONE, Key::Tab)) {
+        let _ = app.session.tool_key(ToolKey::Tab, Mods::default(), view);
+    }
     // The tool gets each letter it takes (E while dragging a selection marquee) once per press,
     // without Cmd, Ctrl or Alt. The key is the one egui reports, which on a layout without Latin
     // letters is the key at that position on a US layout.
@@ -592,6 +633,8 @@ fn claimed_tool_keys(app: &mut VectorcraftApp, ctx: &egui::Context, view: ViewIn
         (Key::ArrowRight, ToolKey::Right),
         (Key::ArrowUp, ToolKey::Up),
         (Key::ArrowDown, ToolKey::Down),
+        // The Smart Pen Tool's Tab while it draws a path (the key otherwise hides the panels).
+        (Key::Tab, ToolKey::Tab),
     ] {
         if ctx.input(|i| i.key_pressed(k)) && app.session.tool_claims_key(tk, view) && ctx.input_mut(|i| i.consume_key(m, k)) {
             let r = app.session.tool_key(tk, crate::canvas::mods(m, false), view);
@@ -686,6 +729,37 @@ fn dispatch(app: &mut VectorcraftApp, ctx: &egui::Context, accept: impl FnMut(&H
     })
 }
 
+/// Params used when a shortcut invokes its command. The named panel function keys retain their
+/// toggle action when their bindings are reassigned.
+fn shortcut_params(c: &CommandRef) -> serde_json::Value {
+    let mut params = if c.params.is_null() { json!({}) } else { c.params.clone() };
+    if c.id == "window.panel"
+        && matches!(
+            params.get("panel").and_then(serde_json::Value::as_str),
+            Some(
+                "brushes"
+                    | "color"
+                    | "layers"
+                    | "info"
+                    | "gradient"
+                    | "stroke"
+                    | "attributes"
+                    | "graphicStyles"
+                    | "appearance"
+                    | "align"
+                    | "transform"
+                    | "pathfinder"
+                    | "transparency"
+                    | "symbols"
+            )
+        )
+    {
+        params["toggle"] = json!(true);
+        params["toggleGroup"] = json!(true);
+    }
+    params
+}
+
 /// Runs what a shortcut is bound to: a tool, a panel (`window.panel {panel}`) or a command.
 fn run_hit(app: &mut VectorcraftApp, ctx: &egui::Context, c: &CommandRef) {
     if let Some(tool) = c.id.strip_prefix("tool:") {
@@ -695,8 +769,7 @@ fn run_hit(app: &mut VectorcraftApp, ctx: &egui::Context, c: &CommandRef) {
         // every artboard instead of the art.
         crate::panels::artboards::select_all(app);
     } else {
-        let p = if c.params.is_null() { json!({}) } else { c.params.clone() };
-        crate::menus::invoke(app, &c.id, p);
+        crate::menus::invoke(app, &c.id, shortcut_params(c));
     }
 }
 
