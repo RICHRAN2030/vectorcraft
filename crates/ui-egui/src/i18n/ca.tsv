@@ -708,7 +708,7 @@
 	Collect in New Layer	Recull en una capa nova
 	Collect Links in a Separate Folder	Recull els enllaços en una carpeta a part
 	Color	Color
-	Color (,)	Color (,)
+	Color (, or <)	Color (, o <)
 	Color Adjustments	Ajustos de color
 	Color bars	Barres de color
 	Color blindness – Deuteranopia-type	Daltonisme – tipus deuteranòpsia
@@ -1691,7 +1691,7 @@
 	GPU Performance	Rendiment de la GPU
 	Grab bag	Calaix de sastre
 	Gradient	Degradat
-	Gradient (.)	Degradat (.)
+	Gradient (. or >)	Degradat (. o >)
 	Gradient across stroke	Degradat transversal al traç
 	Gradient along stroke	Degradat al llarg del traç
 	Gradient and Mesh Resolution:	Resolució de degradat i malla:
@@ -5873,6 +5873,18 @@ anchor	Points:	Punts:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	indiqueu `inkLimit`, `removeWhiteOverprint` o `overprintBlack`
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Les correccions de tinta per a impressió funcionen en documents CMYK: trieu primer Fitxer › Mode de color del document › Color CMYK
 @msg	`{key}` must be 0..{max}	`{key}` ha de ser 0..{max}
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Eina de cantonades
+	Slide Anchor Along Path	Llisca l’ancoratge pel traçat
+	Set Corners	Defineix les cantonades
+	Remove Corners	Elimina les cantonades
+	Corners selected: {count}	Cantonades seleccionades: {count}
+	Apply to Selected Anchors	Aplica als punts d’ancoratge seleccionats
+@msg	`radius` must be from 0 to 1000000 pt	`radius` ha de ser de 0 a 1000000 pt
+@msg	`t` must be a number from -0.98 to 0.98	`t` ha de ser un nombre de -0.98 a 0.98
+@msg	choose anchors where two sides meet at an angle: only those take a corner	trieu punts d’ancoratge on dos costats es troben formant un angle: només aquests admeten una cantonada
+@msg	give `anchor`, the index of the anchor to slide	indiqueu `anchor`, l’índex del punt d’ancoratge que voleu lliscar
+@msg	that anchor can't slide: an end of an open path has nowhere to go	aquest punt d’ancoratge no pot lliscar: l’extrem d’un traçat obert no té on anar
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Divideix el text

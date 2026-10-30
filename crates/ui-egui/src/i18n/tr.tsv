@@ -529,7 +529,7 @@ font-technology	Variable	Değişken
 	Collect in New Layer	Yeni Katmanda Topla
 	Collect Links in a Separate Folder	Bağlantıları Ayrı Bir Klasörde Toplayın
 	Color	Renk
-	Color (,)	Renk (,)
+	Color (, or <)	Renk (, veya <)
 	Color Adjustments	Renk Ayarlamaları
 	Color bars	Renk çubukları
 	Color blindness – Deuteranopia-type	Renk körlüğü – Döteranopi tipi
@@ -1253,7 +1253,7 @@ font-technology	Variable	Değişken
 	GPL palettes keep solid colours only, as RGB.	GPL paletleri yalnızca düz renkleri RGB olarak tutar.
 	GPU Performance	GPU Performansı
 	Gradient	Degrade
-	Gradient (.)	Gradyan (.)
+	Gradient (. or >)	Gradyan (. veya >)
 	Gradient across stroke	Kontur boyunca gradyan
 	Gradient along stroke	Kontur boyunca gradyan
 	Gradient and Mesh Resolution:	Gradyan ve Mesh Çözünürlüğü:
@@ -5884,6 +5884,18 @@ anchor	Points:	Noktalar:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	`inkLimit`, `removeWhiteOverprint` veya `overprintBlack` verin
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Baskı Mürekkebi Düzeltmeleri CMYK belgelerinde çalışır: önce Dosya › Belge Renk Modu › CMYK Rengi'ni seçin
 @msg	`{key}` must be 0..{max}	`{key}` 0..{max} olmalıdır
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Köşe Aracı
+	Slide Anchor Along Path	Bağlantı Noktasını Yol Boyunca Kaydır
+	Set Corners	Köşeleri Ayarla
+	Remove Corners	Köşeleri Kaldır
+	Corners selected: {count}	Seçili köşeler: {count}
+	Apply to Selected Anchors	Seçili Bağlantı Noktalarına Uygula
+@msg	`radius` must be from 0 to 1000000 pt	`radius` 0 ile 1000000 pt arasında olmalıdır
+@msg	`t` must be a number from -0.98 to 0.98	`t` -0.98 ile 0.98 arasında bir sayı olmalıdır
+@msg	choose anchors where two sides meet at an angle: only those take a corner	iki kenarın açıyla birleştiği bağlantı noktalarını seçin: yalnızca onlara köşe uygulanır
+@msg	give `anchor`, the index of the anchor to slide	kaydırılacak bağlantı noktasının dizini `anchor` değerini verin
+@msg	that anchor can't slide: an end of an open path has nowhere to go	bu bağlantı noktası kaydırılamaz: açık yolun ucunun gidecek yeri yok
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Metni Böl

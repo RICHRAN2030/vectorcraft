@@ -498,7 +498,7 @@ font-technology	Variable	可變
 	Collect in New Layer	收集至新圖層
 	Collect Links in a Separate Folder	將連結收集到獨立的資料夾
 	Color	顏色
-	Color (,)	顏色 (,)
+	Color (, or <)	顏色 (, 或 <)
 	Color Adjustments	色彩調整
 	Color bars	色彩條
 	Color blindness – Deuteranopia-type	色盲 – 綠色盲型
@@ -1274,7 +1274,7 @@ file-filter	Templates	範本
 	GPL palettes keep solid colours only, as RGB.	GPL 調色盤僅保留純色，並以 RGB 儲存。
 	GPU Performance	GPU 效能
 	Gradient	漸層
-	Gradient (.)	漸層 (.)
+	Gradient (. or >)	漸層 (. 或 >)
 	Gradient across stroke	橫跨筆畫的漸層
 	Gradient along stroke	沿筆畫的漸層
 	Gradient and Mesh Resolution:	漸層與網格解析度：
@@ -5566,6 +5566,18 @@ anchor	Points:	點：
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	請指定 `inkLimit`、`removeWhiteOverprint` 或 `overprintBlack`
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	印刷油墨修正適用於 CMYK 文件：請先選擇 檔案 › 文件色彩模式 › CMYK 色彩
 @msg	`{key}` must be 0..{max}	`{key}` 必須為 0..{max}
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	轉角工具
+	Slide Anchor Along Path	沿路徑滑動錨點
+	Set Corners	設定轉角
+	Remove Corners	移除轉角
+	Corners selected: {count}	已選取轉角：{count}
+	Apply to Selected Anchors	套用至所選錨點
+@msg	`radius` must be from 0 to 1000000 pt	`radius` 必須為 0 到 1000000 pt
+@msg	`t` must be a number from -0.98 to 0.98	`t` 必須是 -0.98 到 0.98 之間的數字
+@msg	choose anchors where two sides meet at an angle: only those take a corner	請選取兩邊成角相交的錨點：只有這些錨點才能設定轉角
+@msg	give `anchor`, the index of the anchor to slide	請提供 `anchor`，即要滑動的錨點索引
+@msg	that anchor can't slide: an end of an open path has nowhere to go	該錨點無法滑動：開放路徑的端點無處可去
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	分割文字

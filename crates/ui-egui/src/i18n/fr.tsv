@@ -537,7 +537,7 @@ font-technology	Variable	Variables
 	Collect in New Layer	Rassembler dans un nouveau calque
 	Collect Links in a Separate Folder	Rassembler les liens dans un dossier distinct
 	Color	Couleur
-	Color (,)	Couleur (,)
+	Color (, or <)	Couleur (, ou <)
 	Color Adjustments	Réglages de couleur
 	Color bars	Barres de couleurs
 	Color blindness – Deuteranopia-type	Daltonisme – type deutéranopie
@@ -1299,7 +1299,7 @@ font-technology	Variable	Variables
 	GPL palettes keep solid colours only, as RGB.	Les palettes GPL ne conservent que les couleurs unies, en RVB.
 	GPU Performance	Performances GPU
 	Gradient	Dégradé
-	Gradient (.)	Dégradé (.)
+	Gradient (. or >)	Dégradé (. ou >)
 	Gradient across stroke	Dégradé sur la largeur du contour
 	Gradient along stroke	Dégradé le long du contour
 	Gradient and Mesh Resolution:	Résolution des dégradés et des filets :
@@ -5927,6 +5927,18 @@ anchor	Points:	Points :
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	indiquez `inkLimit`, `removeWhiteOverprint` ou `overprintBlack`
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Les corrections d’encres pour l’impression s’appliquent aux documents CMJN : choisissez d’abord Fichier › Mode colorimétrique du document › Couleur CMJN
 @msg	`{key}` must be 0..{max}	`{key}` doit être compris entre 0 et {max}
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Outil Angles
+	Slide Anchor Along Path	Faire glisser le point d’ancrage le long du tracé
+	Set Corners	Définir les angles
+	Remove Corners	Supprimer les angles
+	Corners selected: {count}	Angles sélectionnés : {count}
+	Apply to Selected Anchors	Appliquer aux points d’ancrage sélectionnés
+@msg	`radius` must be from 0 to 1000000 pt	`radius` doit être compris entre 0 et 1000000 pt
+@msg	`t` must be a number from -0.98 to 0.98	`t` doit être un nombre compris entre -0.98 et 0.98
+@msg	choose anchors where two sides meet at an angle: only those take a corner	choisissez des points d’ancrage où deux côtés se rencontrent en formant un angle : seuls ceux-ci acceptent un angle
+@msg	give `anchor`, the index of the anchor to slide	indiquez `anchor`, l’indice du point d’ancrage à faire glisser
+@msg	that anchor can't slide: an end of an open path has nowhere to go	ce point d’ancrage ne peut pas glisser : l’extrémité d’un tracé ouvert n’a nulle part où aller
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Diviser le texte

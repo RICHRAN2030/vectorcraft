@@ -1236,12 +1236,12 @@ lighting	Light	Světlo
 	 to set spacing and orientation	 nastaví rozestupy a orientaci
 	Apply	Použít
 	Change Screen Mode (F)	Změnit režim obrazovky (F)
-	Color (,)	Barva (,)
+	Color (, or <)	Barva (, nebo <)
 	Draw Behind	Kreslit za
 	Draw Inside	Kreslit dovnitř
 	Draw Normal	Kreslit normálně
 	Expand:	Rozložit:
-	Gradient (.)	Přechod (.)
+	Gradient (. or >)	Přechod (. nebo >)
 	H:	V:
 	Modify	Úpravy
 	Navigate	Pohled
@@ -5928,6 +5928,18 @@ anchor	Points:	Body:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	zadejte `inkLimit`, `removeWhiteOverprint` nebo `overprintBlack`
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Opravy tiskových barev fungují v dokumentech CMYK: nejprve zvolte Soubor › Barevný režim dokumentu › Barvy CMYK
 @msg	`{key}` must be 0..{max}	`{key}` musí být 0..{max}
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Nástroj Rohy
+	Slide Anchor Along Path	Posunout kotevní bod po cestě
+	Set Corners	Nastavit rohy
+	Remove Corners	Odstranit rohy
+	Corners selected: {count}	Vybrané rohy: {count}
+	Apply to Selected Anchors	Použít na vybrané kotevní body
+@msg	`radius` must be from 0 to 1000000 pt	`radius` musí být od 0 do 1000000 pt
+@msg	`t` must be a number from -0.98 to 0.98	`t` musí být číslo od -0.98 do 0.98
+@msg	choose anchors where two sides meet at an angle: only those take a corner	vyberte kotevní body, kde se dvě strany setkávají pod úhlem: jen ty mohou mít roh
+@msg	give `anchor`, the index of the anchor to slide	zadejte `anchor`, index kotevního bodu k posunutí
+@msg	that anchor can't slide: an end of an open path has nowhere to go	tento kotevní bod nelze posunout: konec otevřené cesty nemá kam jít
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Rozdělit text

@@ -169,7 +169,7 @@ pub(super) fn drop_press(app: &mut VectorcraftApp, ui: &Ui, view: vectorcraft_en
             // and would otherwise outlive the drag that owns it (#2826).
             // Nothing to roll back without a document; the tool still gets its mouse-up.
             let _ = app.session.cancel_interaction();
-            dispatch(app, &PointerEvent { kind: PointerKind::Up, pos: Point::ZERO, mods: Mods::default(), pressure: 1.0 }, view);
+            dispatch(app, &PointerEvent { kind: PointerKind::Up, pos: Point::ZERO, mods: Mods::default(), backquote: false, pressure: 1.0 }, view);
             egui::DragAndDrop::clear_payload(ui.ctx());
         }
         Some(_) => {}
@@ -249,7 +249,7 @@ fn end_art_move(app: &mut VectorcraftApp, ctx: &egui::Context) {
     // With no document open there is nothing to roll back; the tool still gets its mouse-up.
     let _ = app.session.cancel_interaction();
     let view = app.view_info();
-    dispatch(app, &PointerEvent { kind: PointerKind::Up, pos: Point::ZERO, mods: Mods::default(), pressure: 1.0 }, view);
+    dispatch(app, &PointerEvent { kind: PointerKind::Up, pos: Point::ZERO, mods: Mods::default(), backquote: false, pressure: 1.0 }, view);
     ctx.data_mut(|d| {
         d.remove::<Drag>(drag_id());
         d.remove::<bool>(drag_id().with("art-gone"));

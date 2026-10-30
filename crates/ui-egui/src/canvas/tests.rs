@@ -580,7 +580,7 @@ fn a_click_activates_its_artboard_and_paste_in_place_goes_onto_it() {
     let view = app.view_info();
     let at = boards[2].center();
     for kind in [PointerKind::Down, PointerKind::Up] {
-        dispatch(&mut app, &PointerEvent { kind, pos: at, mods: Default::default(), pressure: 1.0 }, view);
+        dispatch(&mut app, &PointerEvent { kind, pos: at, mods: Default::default(), backquote: false, pressure: 1.0 }, view);
     }
     assert_eq!(app.view().unwrap().artboard, 2, "the clicked artboard is the active one");
     let ids: Vec<vectorcraft_doc::NodeId> = app.run("edit.pasteInPlace", json!({})).unwrap()["ids"]
@@ -613,7 +613,7 @@ fn a_shift_click_activates_its_artboard_and_align_to_artboard_aligns_to_it() {
     let view = app.view_info();
     let shift = Mods { shift: true, ..Default::default() };
     for kind in [PointerKind::Down, PointerKind::Up] {
-        dispatch(&mut app, &PointerEvent { kind, pos: boards[2].center(), mods: shift, pressure: 1.0 }, view);
+        dispatch(&mut app, &PointerEvent { kind, pos: boards[2].center(), mods: shift, backquote: false, pressure: 1.0 }, view);
     }
     assert_eq!(app.view().unwrap().artboard, 2, "the clicked artboard is the active one");
     assert_eq!(app.session.active().unwrap().selection.objects, ids, "the selection stays");
@@ -668,7 +668,7 @@ fn the_active_artboard_is_outlined_in_black() {
     let view = app.view_info();
     let shift = Mods { shift: true, ..Default::default() };
     for kind in [PointerKind::Down, PointerKind::Up] {
-        dispatch(&mut app, &PointerEvent { kind, pos: at, mods: shift, pressure: 1.0 }, view);
+        dispatch(&mut app, &PointerEvent { kind, pos: at, mods: shift, backquote: false, pressure: 1.0 }, view);
     }
     assert_eq!(app.session.tool_options()["selected"], json!([2, 1]));
     assert_eq!(edges(&mut app), active(2), "Artboard 3 is the active one of the two selected");
@@ -2916,6 +2916,50 @@ fn mirror_axis_tracks_selection_options_and_view_without_editing_art() {
     assert!((d.x.abs() - d.y.abs()).abs() < 0.01);
     app.run("object.repeat.release", json!({})).unwrap();
     assert!(axis(&mut app).is_empty());
+}
+
+#[test]
+fn egui_backtick_drag_uses_key_state_at_release() {
+    use egui::Event;
+    let mut app = VectorcraftApp::new(Session::new(), Default::default());
+    app.run("file.new", json!({"width": 400, "height": 300})).unwrap();
+    let tile = app.run("shape.rectangle", json!({"x": 0, "y": 0, "width": 10, "height": 10})).unwrap()["id"].as_u64().unwrap();
+    app.run("object.pattern.make", json!({"ids": [tile], "name": "Dots", "width": 20, "height": 20})).unwrap();
+    app.run("object.pattern.done", json!({})).unwrap();
+    let id = app.run("shape.rectangle", json!({"x": 100, "y": 100, "width": 50, "height": 50})).unwrap()["id"].as_u64().unwrap();
+    app.run("paint.setFill", json!({"ids": [id], "swatch": "Dots"})).unwrap();
+    app.run("select.set", json!({"ids": [id]})).unwrap();
+    app.select_tool("selection");
+    app.ui.task_bar = false;
+    app.ui.view.rulers = false;
+    let ctx = egui::Context::default();
+    frame(&mut app, &ctx, vec![]);
+    let xf = Xf::new(app.canvas_rect.unwrap(), app.view().unwrap());
+    let from = xf.to_screen(Point::new(125.0, 125.0));
+    let to = xf.to_screen(Point::new(145.0, 125.0));
+    let button = |pos, pressed| Event::PointerButton { pos, button: egui::PointerButton::Primary, pressed, modifiers: Default::default() };
+    let key = |pressed| Event::Key { key: egui::Key::Backtick, physical_key: None, pressed, repeat: false, modifiers: Default::default() };
+    let node = |app: &VectorcraftApp| app.session.doc().unwrap().doc.node(vectorcraft_doc::NodeId(id)).unwrap().clone();
+    let before = node(&app);
+    frame(&mut app, &ctx, vec![Event::PointerMoved(from), button(from, true)]);
+    frame(&mut app, &ctx, vec![key(true), Event::PointerMoved(to)]);
+    frame(&mut app, &ctx, vec![button(to, false)]);
+    let after = node(&app);
+    assert_eq!(after.geometric_bounds(), before.geometric_bounds(), "backtick release keeps geometry still");
+    let vectorcraft_color::Paint::Pattern { xf, .. } = after.appearance.fill_paint() else { panic!("pattern fill expected") };
+    assert!((xf.as_coeffs()[4] - 20.0).abs() < 0.001, "egui backtick reaches the active tool");
+    app.run("edit.undo", json!({})).unwrap();
+    assert_eq!(node(&app), before, "one Undo restores the pattern transform");
+    frame(&mut app, &ctx, vec![key(false)]);
+    frame(&mut app, &ctx, vec![Event::PointerMoved(from), button(from, true)]);
+    frame(&mut app, &ctx, vec![key(true), Event::PointerMoved(to)]);
+    frame(&mut app, &ctx, vec![key(false)]);
+    frame(&mut app, &ctx, vec![button(to, false)]);
+    let ordinary = node(&app);
+    assert!(
+        (ordinary.geometric_bounds().unwrap().x0 - before.geometric_bounds().unwrap().x0 - 20.0).abs() < 0.001,
+        "key released before mouse up commits an ordinary move"
+    );
 }
 
 #[test]

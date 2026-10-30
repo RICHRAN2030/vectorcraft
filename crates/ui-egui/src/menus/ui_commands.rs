@@ -1,6 +1,12 @@
 /// UI-level commands: (id, label, shortcut, params doc).
 pub const UI_COMMANDS: &[(&str, &str, &str, &str)] = &[
     (
+        crate::addons::pathtools::corner::COMMAND,
+        "Corner Tool",
+        "",
+        "{} choose the Corner Tool and show the Anchor Inspector panel with its radius and kind",
+    ),
+    (
         "app.language",
         "Interface Language",
         "",

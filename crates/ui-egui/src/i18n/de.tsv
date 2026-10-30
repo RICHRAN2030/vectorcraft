@@ -514,7 +514,7 @@ font-technology	Variable	Variabel
 	Collect in New Layer	In neuer Ebene sammeln
 	Collect Links in a Separate Folder	Verknüpfungen in separatem Ordner sammeln
 	Color	Farbe
-	Color (,)	Farbe (,)
+	Color (, or <)	Farbe (, oder <)
 	Color Adjustments	Farbkorrekturen
 	Color bars	Farbkontrollstreifen
 	Color blindness – Deuteranopia-type	Farbenblindheit – Deuteranopie
@@ -1287,7 +1287,7 @@ file-filter	Templates	Vorlagen
 	GPL palettes keep solid colours only, as RGB.	GPL-Paletten enthalten nur einfarbige Farben, als RGB.
 	GPU Performance	GPU-Leistung
 	Gradient	Verlauf
-	Gradient (.)	Verlauf (.)
+	Gradient (. or >)	Verlauf (. oder >)
 	Gradient across stroke	Verlauf quer zur Kontur
 	Gradient along stroke	Verlauf entlang der Kontur
 	Gradient and Mesh Resolution:	Auflösung für Verläufe und Gitter:
@@ -5513,6 +5513,18 @@ anchor	Points:	Punkte:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	geben Sie `inkLimit`, `removeWhiteOverprint` oder `overprintBlack` an
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Druckfarbkorrekturen wirken in CMYK-Dokumenten: Wählen Sie zuerst Datei › Dokumentfarbmodus › CMYK-Farbe
 @msg	`{key}` must be 0..{max}	`{key}` muss 0..{max} sein
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Ecken-Werkzeug
+	Slide Anchor Along Path	Ankerpunkt entlang des Pfads verschieben
+	Set Corners	Ecken festlegen
+	Remove Corners	Ecken entfernen
+	Corners selected: {count}	Ausgewählte Ecken: {count}
+	Apply to Selected Anchors	Auf ausgewählte Ankerpunkte anwenden
+@msg	`radius` must be from 0 to 1000000 pt	`radius` muss von 0 bis 1000000 pt sein
+@msg	`t` must be a number from -0.98 to 0.98	`t` muss eine Zahl von -0.98 bis 0.98 sein
+@msg	choose anchors where two sides meet at an angle: only those take a corner	Ankerpunkte wählen, an denen zwei Seiten im Winkel aufeinandertreffen: nur diese können eine Ecke bekommen
+@msg	give `anchor`, the index of the anchor to slide	`anchor` angeben, den Index des zu verschiebenden Ankerpunkts
+@msg	that anchor can't slide: an end of an open path has nowhere to go	dieser Ankerpunkt lässt sich nicht verschieben: das Ende eines offenen Pfads kann nirgendwohin
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Text aufteilen

@@ -323,9 +323,13 @@ pub fn handle(app: &mut VectorcraftApp, ctx: &egui::Context) {
     if claimed_tool_keys(app, ctx, view) {
         return;
     }
-    // Command, panel and tool shortcuts. Keys that type a character without Cmd/Alt/Ctrl are
-    // handled below as text (tool shortcuts, X, D, /, `,` and `.`).
-    let hits = dispatch(app, ctx, |hit| !(hit.trigger.chord.is_plain() && types_text(hit.trigger.chord.key)));
+    // Command, panel and tool shortcuts. A bound shifted punctuation chord uses its key press;
+    // other text keys use the typed character below.
+    let hits = dispatch(app, ctx, |hit| {
+        let chord = hit.trigger.chord;
+        let shifted_punctuation = chord.mods.shift && chord.key.name().chars().all(|c| !c.is_alphanumeric());
+        !(chord.is_plain() && types_text(chord.key) && !shifted_punctuation)
+    });
     let ran = !hits.is_empty();
     for c in hits {
         run_hit(app, ctx, &c);
@@ -715,6 +719,25 @@ fn dispatch(app: &mut VectorcraftApp, ctx: &egui::Context, accept: impl FnMut(&H
     let mirror = crate::shortcut_editor::current();
     let dispatcher = &mut app.dispatcher;
     ctx.input_mut(|i| {
+        // Shift+Comma and Shift+Period follow their key positions when the logical character
+        // differs. An explicitly bound logical shifted chord takes precedence.
+        for e in &mut i.events {
+            if let egui::Event::Key { key, physical_key: Some(physical), modifiers, pressed: true, .. } = e
+                && modifiers.shift
+                && matches!(*physical, Key::Comma | Key::Period)
+                && *key != *physical
+                && let (Some(logical), Some(position)) = (craft_keymap::Key::from_egui(*key), craft_keymap::Key::from_egui(*physical))
+            {
+                let mods = craft_keymap::Mods::from_egui(modifiers, crate::keymap::platform());
+                let logical_chord = craft_keymap::Chord::new(mods, logical);
+                let position_chord = craft_keymap::Chord::new(mods, position);
+                if crate::keymap::lookup(&mirror.keymap, &logical_chord).is_some() {
+                    *physical = *key;
+                } else if crate::keymap::lookup(&mirror.keymap, &position_chord).is_some() {
+                    *key = *physical;
+                }
+            }
+        }
         // Shift+`=` types `+`: as the Plus key it also reaches a `=` chord held with Shift
         // (Cmd+Shift+= zooms in as Cmd+= does).
         for e in &mut i.events {

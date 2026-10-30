@@ -3395,7 +3395,7 @@ gradient-kind	Radial	円形
 	Client-side (.html)	クライアントサイド (.html)
 	Cmd	Cmd
 	Collect Links in a Separate Folder	リンクを別フォルダーに収集
-	Color (,)	カラー (,)
+	Color (, or <)	カラー (, または <)
 	Color Group	カラーグループ
 	Color Library	カラーライブラリ
 	Color Management	カラーマネジメント
@@ -3490,7 +3490,7 @@ file-filter	Templates	テンプレート
 	General › Placement › X	一般 › 位置 › X
 	General › Thumbnails	一般 › サムネール
 	Global Process Color, CMYK	グローバルプロセスカラー、CMYK
-	Gradient (.)	グラデーション (.)
+	Gradient (. or >)	グラデーション (. または >)
 	Graph Data	グラフデータ
 	Graph Type	グラフの種類
 	Graph Design	グラフのデザイン
@@ -5616,6 +5616,18 @@ anchor	Points:	ポイント:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	`inkLimit`、`removeWhiteOverprint` または `overprintBlack` を指定してください
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	印刷インキの修正は CMYK ドキュメントで使用できます。先にファイル › ドキュメントのカラーモード › CMYK カラーを選択してください
 @msg	`{key}` must be 0..{max}	`{key}` は 0..{max} にしてください
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	コーナーツール
+	Slide Anchor Along Path	パスに沿ってアンカーポイントをスライド
+	Set Corners	コーナーを設定
+	Remove Corners	コーナーを削除
+	Corners selected: {count}	選択中のコーナー：{count}
+	Apply to Selected Anchors	選択中のアンカーポイントに適用
+@msg	`radius` must be from 0 to 1000000 pt	`radius` は 0 から 1000000 pt にしてください
+@msg	`t` must be a number from -0.98 to 0.98	`t` は -0.98 から 0.98 の数値にしてください
+@msg	choose anchors where two sides meet at an angle: only those take a corner	2 つの辺が角度をなして交わるアンカーポイントを選択してください：コーナーを作れるのはそこだけです
+@msg	give `anchor`, the index of the anchor to slide	スライドするアンカーポイントの番号 `anchor` を指定してください
+@msg	that anchor can't slide: an end of an open path has nowhere to go	そのアンカーポイントはスライドできません：オープンパスの端点には移動先がありません
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	テキストを分割

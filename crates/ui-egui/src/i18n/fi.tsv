@@ -1214,12 +1214,12 @@ lighting	Light	Valo
 	 to set spacing and orientation	 asettaaksesi välit ja suunnan
 	Apply	Käytä
 	Change Screen Mode (F)	Vaihda näyttötilaa (F)
-	Color (,)	Väri (,)
+	Color (, or <)	Väri (, tai <)
 	Draw Behind	Piirrä taakse
 	Draw Inside	Piirrä sisään
 	Draw Normal	Piirrä normaalisti
 	Expand:	Laajenna:
-	Gradient (.)	Liukuväri (.)
+	Gradient (. or >)	Liukuväri (. tai >)
 	H:	K:
 	Modify	Muokkaa
 	Navigate	Siirry
@@ -5959,6 +5959,18 @@ anchor	Points:	Pisteet:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	anna `inkLimit`, `removeWhiteOverprint` tai `overprintBlack`
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	Painovärien korjaukset toimivat CMYK-asiakirjoissa: valitse ensin Tiedosto › Asiakirjan väritila › CMYK-väri
 @msg	`{key}` must be 0..{max}	`{key}` on oltava 0..{max}
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	Kulmatyökalu
+	Slide Anchor Along Path	Liu’uta ankkuripistettä polkua pitkin
+	Set Corners	Aseta kulmat
+	Remove Corners	Poista kulmat
+	Corners selected: {count}	Valittuja kulmia: {count}
+	Apply to Selected Anchors	Käytä valittuihin ankkuripisteisiin
+@msg	`radius` must be from 0 to 1000000 pt	`radius` on oltava 0–1000000 pt
+@msg	`t` must be a number from -0.98 to 0.98	`t` on oltava luku väliltä -0.98–0.98
+@msg	choose anchors where two sides meet at an angle: only those take a corner	valitse ankkuripisteet, joissa kaksi sivua kohtaa kulmassa: vain niihin voi tehdä kulman
+@msg	give `anchor`, the index of the anchor to slide	anna `anchor`, liu’utettavan ankkuripisteen indeksi
+@msg	that anchor can't slide: an end of an open path has nowhere to go	tätä ankkuripistettä ei voi liu’uttaa: avoimen polun päällä ei ole minne mennä
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Jaa teksti

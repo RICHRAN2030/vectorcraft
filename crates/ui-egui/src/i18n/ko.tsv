@@ -3381,7 +3381,7 @@ gradient-kind	Radial	방사형
 	Client-side (.html)	클라이언트 측 (.html)
 	Cmd	Cmd
 	Collect Links in a Separate Folder	링크를 별도 폴더에 모으기
-	Color (,)	색상 (,)
+	Color (, or <)	색상 (, 또는 <)
 	Color Group	색상 그룹
 	Color Library	색상 라이브러리
 	Color Management	색상 관리
@@ -3476,7 +3476,7 @@ file-filter	Templates	템플릿
 	General › Placement › X	일반 › 배치 › X
 	General › Thumbnails	일반 › 축소판
 	Global Process Color, CMYK	글로벌 프로세스 색상, CMYK
-	Gradient (.)	그레이디언트 (.)
+	Gradient (. or >)	그레이디언트 (. 또는 >)
 	Graph Data	그래프 데이터
 	Graph Type	그래프 유형
 	Graph Design	그래프 디자인
@@ -5510,6 +5510,18 @@ anchor	Points:	포인트:
 @msg	give `inkLimit`, `removeWhiteOverprint` or `overprintBlack`	`inkLimit`, `removeWhiteOverprint` 또는 `overprintBlack`을 지정하십시오
 @msg	Print Ink Fixes works on CMYK documents: choose File › Document Color Mode › CMYK Color first	인쇄 잉크 수정은 CMYK 문서에서 작동합니다. 먼저 파일 › 문서 색상 모드 › CMYK 색상을 선택하십시오
 @msg	`{key}` must be 0..{max}	`{key}`은(는) 0..{max}이어야 합니다
+# Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
+	Corner Tool	모퉁이 도구
+	Slide Anchor Along Path	패스를 따라 앵커 포인트 밀기
+	Set Corners	모퉁이 설정
+	Remove Corners	모퉁이 제거
+	Corners selected: {count}	선택한 모퉁이: {count}
+	Apply to Selected Anchors	선택한 앵커 포인트에 적용
+@msg	`radius` must be from 0 to 1000000 pt	`radius`은(는) 0에서 1000000 pt 사이여야 합니다
+@msg	`t` must be a number from -0.98 to 0.98	`t`은(는) -0.98에서 0.98 사이의 숫자여야 합니다
+@msg	choose anchors where two sides meet at an angle: only those take a corner	두 변이 각을 이루며 만나는 앵커 포인트를 선택하세요. 그런 포인트만 모퉁이를 만들 수 있습니다
+@msg	give `anchor`, the index of the anchor to slide	밀 앵커 포인트의 인덱스 `anchor`를 지정하세요
+@msg	that anchor can't slide: an end of an open path has nowhere to go	이 앵커 포인트는 밀 수 없습니다. 열린 패스의 끝은 갈 곳이 없습니다
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	텍스트 나누기
