@@ -530,7 +530,7 @@ font-technology	Variable	Варіативні
 	Collect in New Layer	Зібрати у новий шар
 	Collect Links in a Separate Folder	Зібрати зв’язки в окрему папку
 	Color	Колір
-	Color (, or <)	Колір (, або <)
+	Color (, or Shift+,)	Колір (, або Shift+,)
 	Color Adjustments	Налаштування кольору
 	Color bars	Кольорові смуги
 	Color blindness – Deuteranopia-type	Дальтонізм - дейтеранопія
@@ -768,7 +768,6 @@ font-technology	Variable	Варіативні
 	Delete the graphic style “{name}”?	Видалити графічний стиль «{name}»?
 	Delete Theme	Видалити тему
 	Delete theme	Видалити тему
-	Delete these {count} swatches and groups?	Видалити ці зразки та групи ({count})?
 	Delete these {n} graphic styles?	Видалити ці графічні стилі ({n})?
 	Delete this saved preset	Видалити цей збережений набір
 	Delete this {n} graphic style?	Видалити цей графічний стиль ({n})?
@@ -1304,7 +1303,7 @@ file-filter	Templates	Шаблони
 	GPL palettes keep solid colours only, as RGB.	Палітри GPL зберігають лише суцільні кольори RGB.
 	GPU Performance	Продуктивність GPU
 	Gradient	Градієнт
-	Gradient (. or >)	Градієнт (. або >)
+	Gradient (. or Shift+.)	Градієнт (. або Shift+.)
 	Gradient across stroke	Градієнт упоперек обведення
 	Gradient along stroke	Градієнт вздовж обведення
 	Gradient and Mesh Resolution:	Роздільна здатність градієнтів і сіток:
@@ -3746,6 +3745,7 @@ imageTrace	Outline	Контур
 @plural	{n} item|{n} items	{n} елемент|{n} елементи|{n} елементів
 @plural	Color Table ({n} color)|Color Table ({n} colors)	Таблиця кольорів ({n} колір)|Таблиця кольорів ({n} кольори)|Таблиця кольорів ({n} кольорів)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	Видалити цей графічний стиль ({n})?|Видалити ці графічні стилі ({n})?|Видалити ці графічні стилі ({n})?
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	Видалити зразки та групи ({n})?|Видалити {n} зразки та групи?|Видалити {n} зразків і груп?
 @plural	{n} Layer|{n} Layers	{n} шар|{n} шари|{n} шарів
 @plural	{n} Object|{n} Objects	{n} об’єкт|{n} об’єкти|{n} об’єктів
 @plural	{n} area highlighted|{n} areas highlighted	Підсвічено {n} область|Підсвічено {n} області|Підсвічено {n} областей
@@ -4261,6 +4261,7 @@ axis	Both	Обидві
 @msg	no such perspective grid preset	такого набору сітки перспективи немає
 @msg	no such recent file	такого останнього файлу немає
 @msg	no such recent font	такого останнього шрифту немає
+@msg	some text is hidden or locked, so its font wasn't replaced	частина тексту прихована або заблокована, тому її шрифт не замінено
 @msg	no such saved selection	такого збереженого виділення немає
 @msg	no such segment	такого сегменту немає
 @msg	no such spine point	такої точки осі немає
@@ -5539,6 +5540,17 @@ anchor	Points:	Точки:
 @msg	choose anchors where two sides meet at an angle: only those take a corner	виберіть опорні точки, де дві сторони сходяться під кутом: лише вони приймають кут
 @msg	give `anchor`, the index of the anchor to slide	вкажіть `anchor`, індекс опорної точки для зсуву
 @msg	that anchor can't slide: an end of an open path has nowhere to go	цю опорну точку не можна зсунути: кінцю відкритого контуру нікуди рухатися
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	Інструмент «Об’єднання спільного краю»
+	Merge Shared Edge	Об’єднати спільний край
+	Keep Shared Points Together	Тримати спільні точки разом
+	Shared Edges	Спільні краї
+	Coincidence:	Збіг:
+@msg	`a` and `b` must be two different paths	`a` і `b` мають бути двома різними контурами
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter` має бути від 0.25 до 200 pt
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance` має бути від 0 до 3 pt
+@msg	`follow` must be "average", "a" or "b"	`follow` має бути "average", "a" або "b"
+@msg	the paths have nothing to merge there	тут у контурів немає чого об’єднувати
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Розбити текст
@@ -5583,3 +5595,44 @@ breakText	Glyphs	Гліфи
 @msg	`by` must be lines, paragraphs, words or glyphs, not {other}	`by` має бути lines, paragraphs, words або glyphs, а не {other}
 @msg	`kind` must be "line" or "paragraph", not {other}	`kind` має бути "line" або "paragraph", а не {other}
 @msg	`align` must be "left", "center" or "right", not {other}	`align` має бути "left", "center" або "right", а не {other}
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Path Effects	Ефекти контуру
+	Reverse Direction	Змінити напрям
+	Align to Corners and Ends	Вирівняти за кутами й кінцями
+	Count	Кількість
+	Max Count	Найбільша кількість
+	Start Length	Довжина на початку
+	Start Percent	Відсотки на початку
+	Start Shape	Форма на початку
+	End Length	Довжина в кінці
+	End Percent	Відсотки в кінці
+	End Shape	Форма в кінці
+	By Count	За кількістю
+	By Distance	За відстанню
+	Both	Обидва
+	Shorter Than Length	Коротші за довжину
+	Anchors	Опорні точки
+	Dashes to Geometry	Штрихи в геометрію
+	Dashes to Geometry…	Штрихи в геометрію…
+	Add Anchors	Додати опорні точки
+	Add Anchors…	Додати опорні точки…
+	Smooth Anchors	Згладити опорні точки
+	Smooth Anchors…	Згладити опорні точки…
+	Simplify Anchors	Спростити опорні точки
+	Simplify Anchors…	Спростити опорні точки…
+	Split at Anchors	Розрізати в опорних точках
+	Split at Anchors…	Розрізати в опорних точках…
+	Extend Path…	Подовжити контур…
+	Close Path…	Замкнути контур…
+	Retract Handles…	Прибрати маркери…
+	Dash 1	Штрих 1
+	Gap 1	Проміжок 1
+	Dash 2	Штрих 2
+	Gap 2	Проміжок 2
+	Dash 3	Штрих 3
+	Gap 3	Проміжок 3
+	Dash 4	Штрих 4
+	Gap 4	Проміжок 4
+	Dash 5	Штрих 5
+	Gap 5	Проміжок 5

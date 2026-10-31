@@ -1188,12 +1188,12 @@ lighting	Light	Svjetlo
 	 to set spacing and orientation	 za postavljanje razmaka i orijentacije
 	Apply	Primijeni
 	Change Screen Mode (F)	Promijeni način prikaza ekrana (F)
-	Color (,)	Boja (,)
+	Color (, or Shift+,)	Boja (, ili Shift+,)
 	Draw Behind	Crtaj iza
 	Draw Inside	Crtaj unutra
 	Draw Normal	Crtaj normalno
 	Expand:	Proširi:
-	Gradient (.)	Gradijent (.)
+	Gradient (. or Shift+.)	Gradijent (. ili Shift+.)
 	H:	V:
 	Modify	Izmijeni
 	Navigate	Navigacija
@@ -1917,7 +1917,6 @@ lighting	Light	Svjetlo
 	Weight:	Debljina:
 	Art using a deleted global swatch keeps its colour.	Crtež koji koristi izbrisani globalni uzorak boje zadržava svoju boju.
 	Color Group: {name}	Grupa boja: {name}
-	Delete these {count} swatches and groups?	Izbrisati ove uzorke boja i grupe ({count})?
 	Delete “{name}”?	Izbrisati „{name}”?
 	Document Swatches	Uzorci boja dokumenta
 	Edit or Apply Color Group	Uredi ili primijeni grupu boja
@@ -4088,6 +4087,7 @@ imageTrace	Outline	Obris
 @plural	{n} item|{n} items	{n} stavka|{n} stavke|{n} stavki
 @plural	Color Table ({n} color)|Color Table ({n} colors)	Tabela boja ({n} boja)|Tabela boja ({n} boje)|Tabela boja ({n} boja)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	Izbrisati ovaj {n} grafički stil?|Izbrisati ova {n} grafička stila?|Izbrisati ovih {n} grafičkih stilova?
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	Izbrisati uzorke boja i grupe ({n})?|Izbrisati {n} uzorka boja i grupe?|Izbrisati {n} uzoraka boja i grupa?
 @plural	{n} Layer|{n} Layers	{n} sloj|{n} sloja|{n} slojeva
 @plural	{n} Object|{n} Objects	{n} objekat|{n} objekta|{n} objekata
 @plural	{n} area highlighted|{n} areas highlighted	Istaknuto {n} područje|Istaknuta {n} područja|Istaknuto {n} područja
@@ -4480,6 +4480,7 @@ imageTrace	Outline	Obris
 @msg	no such perspective grid preset	nema takvog predloška mreže perspektive
 @msg	no such recent file	nema takve nedavne datoteke
 @msg	no such recent font	nema takvog nedavnog fonta
+@msg	some text is hidden or locked, so its font wasn't replaced	dio teksta je skriven ili zaključan, pa njegov font nije zamijenjen
 @msg	no such saved selection	nema takvog sačuvanog odabira
 @msg	no such segment	nema takvog segmenta
 @msg	no such spine point	nema takve tačke kičme
@@ -5832,10 +5833,7 @@ swatch	White, Black	Bijela, crna
 swatch	Yellow	Žuta
 swatch	Yellow Green	Žuto-zelena
 	Check for Updates…	Provjeri ažuriranja…
-	Checking for updates…	Provjera ažuriranja…
-	Could not check for updates:\n{error}	Nije moguće provjeriti ažuriranja:\n{error}
 	VectorCraft Updates	VectorCraft ažuriranja
-	VectorCraft {version} is currently the newest version available.	VectorCraft {version} je trenutno najnovija dostupna verzija.
 	Preparing the image…	Priprema slike…
 	Tracing the colors…	Praćenje boja…
 	Units & Scale	Jedinice i skala
@@ -5852,6 +5850,48 @@ swatch	Yellow Green	Žuto-zelena
 	Position:	Položaj:
 	Font Size:	Veličina fonta:
 shape	Open	Otvoren
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Retract Handles	Uvuci ručke
+	Curved	Zakrivljeno
+	Path Effects	Efekti putanje
+	Reverse Direction	Obrni smjer
+	Align to Corners and Ends	Poravnaj s uglovima i krajevima
+	Count	Broj
+	Max Count	Najveći broj
+	Start Length	Dužina na početku
+	Start Percent	Postotak na početku
+	Start Shape	Oblik na početku
+	End Length	Dužina na kraju
+	End Percent	Postotak na kraju
+	End Shape	Oblik na kraju
+	By Count	Po broju
+	By Distance	Po udaljenosti
+	Both	Oba
+	Shorter Than Length	Kraće od dužine
+	Dashes to Geometry	Crtice u geometriju
+	Dashes to Geometry…	Crtice u geometriju…
+	Add Anchors	Dodaj sidra
+	Add Anchors…	Dodaj sidra…
+	Smooth Anchors	Zagladi sidra
+	Smooth Anchors…	Zagladi sidra…
+	Simplify Anchors	Pojednostavi sidra
+	Simplify Anchors…	Pojednostavi sidra…
+	Split at Anchors	Razdvoji na sidrima
+	Split at Anchors…	Razdvoji na sidrima…
+	Extend Path…	Produži putanju…
+	Close Path…	Zatvori putanju…
+	Retract Handles…	Uvuci ručke…
+	Dash 1	Crtica 1
+	Gap 1	Razmak 1
+	Dash 2	Crtica 2
+	Gap 2	Razmak 2
+	Dash 3	Crtica 3
+	Gap 3	Razmak 3
+	Dash 4	Crtica 4
+	Gap 4	Razmak 4
+	Dash 5	Crtica 5
+	Gap 5	Razmak 5
 # Path Precision Tools add-on: the Corner Tool and Slide Anchor Along Path.
 	Corner Tool	Alat za uglove
 	Slide Anchor Along Path	Klizanje sidra po putanji
@@ -5864,3 +5904,15 @@ shape	Open	Otvoren
 @msg	choose anchors where two sides meet at an angle: only those take a corner	odaberite sidra gdje se dvije stranice sastaju pod uglom: samo ona primaju ugao
 @msg	give `anchor`, the index of the anchor to slide	navedite `anchor`, indeks sidra koje klizi
 @msg	that anchor can't slide: an end of an open path has nowhere to go	to sidro ne može kliziti: kraj otvorene putanje nema kuda
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	Alat za spajanje zajedničke ivice
+	Merge Shared Edge	Spoji zajedničku ivicu
+	Keep Shared Points Together	Drži zajedničke tačke zajedno
+	Shared Edges	Zajedničke ivice
+	Coincidence:	Podudarnost:
+@msg	`a` and `b` must be two different paths	`a` i `b` moraju biti dvije različite putanje
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter` mora biti od 0.25 do 200 pt
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance` mora biti od 0 do 3 pt
+@msg	`follow` must be "average", "a" or "b"	`follow` mora biti "average", "a" ili "b"
+@msg	the paths have nothing to merge there	putanje tu nemaju šta spojiti
+@msg	the path is locked or hidden	putanja je zaključana ili skrivena

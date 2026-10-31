@@ -468,9 +468,10 @@ pub fn cancel(app: &mut VectorcraftApp) {
     missing_fonts::requeue_replaced(app);
     if let Some(d) = app.ui.dialog.take() {
         // Toolbar-only Flare options start no preview and must not cancel a gesture
-        // that was already active before opening them.
+        // that was already active before opening them. The generic parameter dialog has a spec
+        // without a preview, yet previews some commands (Grid Repeat Options) when asked to.
         let owns_preview = d.kind != flare_options::KIND || d.fields.contains_key(form::PREVIEWED);
-        if spec(&d.kind).preview && owns_preview {
+        if (spec(&d.kind).preview && owns_preview) || d.fields.contains_key(form::PREVIEWED) {
             let _ = app.session.cancel_interaction();
         }
         app.ui.dialog = parent(&d);

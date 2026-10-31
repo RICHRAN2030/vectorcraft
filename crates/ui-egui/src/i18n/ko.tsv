@@ -1315,7 +1315,6 @@ font-technology	Variable	가변
 	Delete Workspace	작업 영역 삭제
 	Delete the graphic style “{name}”?	그래픽 스타일 “{name}”을(를) 삭제하시겠습니까?
 	Delete theme	테마 삭제
-	Delete these {count} swatches and groups?	견본과 그룹 {count}개를 삭제하시겠습니까?
 	Delete this saved preset	저장된 이 프리셋 삭제
 	Delete {kind} Style	{kind} 스타일 삭제
 	Delete “{name}”?	“{name}”을(를) 삭제하시겠습니까?
@@ -3381,7 +3380,7 @@ gradient-kind	Radial	방사형
 	Client-side (.html)	클라이언트 측 (.html)
 	Cmd	Cmd
 	Collect Links in a Separate Folder	링크를 별도 폴더에 모으기
-	Color (, or <)	색상 (, 또는 <)
+	Color (, or Shift+,)	색상 (, 또는 Shift+,)
 	Color Group	색상 그룹
 	Color Library	색상 라이브러리
 	Color Management	색상 관리
@@ -3476,7 +3475,7 @@ file-filter	Templates	템플릿
 	General › Placement › X	일반 › 배치 › X
 	General › Thumbnails	일반 › 축소판
 	Global Process Color, CMYK	글로벌 프로세스 색상, CMYK
-	Gradient (. or >)	그레이디언트 (. 또는 >)
+	Gradient (. or Shift+.)	그레이디언트 (. 또는 Shift+.)
 	Graph Data	그래프 데이터
 	Graph Type	그래프 유형
 	Graph Design	그래프 디자인
@@ -3725,6 +3724,7 @@ file-filter	Templates	템플릿
 imageTrace	Outline	윤곽선
 @plural	Color Table ({n} color)|Color Table ({n} colors)	색상 표 ({n}색)|색상 표 ({n}색)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	그래픽 스타일 {n}개를 삭제하시겠습니까?|그래픽 스타일 {n}개를 삭제하시겠습니까?
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	견본과 그룹 {n}개를 삭제하시겠습니까?
 @plural	{n} Layer|{n} Layers	레이어 {n}개|레이어 {n}개
 @plural	{n} Object|{n} Objects	개체 {n}개|개체 {n}개
 @plural	{n} area highlighted|{n} areas highlighted	강조된 영역 {n}개|강조된 영역 {n}개
@@ -4499,6 +4499,7 @@ theme	Appearance	외관
 @msg	no such perspective grid preset	해당 원근 격자 프리셋이 없습니다
 @msg	no such recent file	해당 최근 파일이 없습니다
 @msg	no such recent font	해당 최근 글꼴이 없습니다
+@msg	some text is hidden or locked, so its font wasn't replaced	일부 텍스트가 숨겨져 있거나 잠겨 있어 해당 글꼴을 바꾸지 않았습니다
 @msg	no such saved selection	해당 저장된 선택 영역이 없습니다
 @msg	no such user library	해당 사용자 라이브러리가 없습니다
 @msg	no such view	해당 보기가 없습니다
@@ -5522,6 +5523,17 @@ anchor	Points:	포인트:
 @msg	choose anchors where two sides meet at an angle: only those take a corner	두 변이 각을 이루며 만나는 앵커 포인트를 선택하세요. 그런 포인트만 모퉁이를 만들 수 있습니다
 @msg	give `anchor`, the index of the anchor to slide	밀 앵커 포인트의 인덱스 `anchor`를 지정하세요
 @msg	that anchor can't slide: an end of an open path has nowhere to go	이 앵커 포인트는 밀 수 없습니다. 열린 패스의 끝은 갈 곳이 없습니다
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	공유 가장자리 병합 도구
+	Merge Shared Edge	공유 가장자리 병합
+	Keep Shared Points Together	공유 포인트 함께 유지
+	Shared Edges	공유 가장자리
+	Coincidence:	일치 허용치:
+@msg	`a` and `b` must be two different paths	`a`와 `b`는 서로 다른 두 패스여야 합니다
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter`는 0.25~200 pt여야 합니다
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance`는 0~3 pt여야 합니다
+@msg	`follow` must be "average", "a" or "b"	`follow`는 "average", "a" 또는 "b"여야 합니다
+@msg	the paths have nothing to merge there	여기에는 병합할 패스 부분이 없습니다
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	텍스트 나누기
@@ -5566,3 +5578,44 @@ breakText	Glyphs	글리프
 @msg	`by` must be lines, paragraphs, words or glyphs, not {other}	`by`는 lines, paragraphs, words 또는 glyphs여야 합니다({other}는 사용할 수 없음)
 @msg	`kind` must be "line" or "paragraph", not {other}	`kind`는 "line" 또는 "paragraph"여야 합니다({other}는 사용할 수 없음)
 @msg	`align` must be "left", "center" or "right", not {other}	`align`은 "left", "center" 또는 "right"여야 합니다({other}는 사용할 수 없음)
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Path Effects	패스 효과
+	Reverse Direction	방향 반전
+	Align to Corners and Ends	모퉁이와 끝에 정렬
+	Count	개수
+	Max Count	최대 개수
+	Start Length	시작 길이
+	Start Percent	시작 퍼센트
+	Start Shape	시작 모양
+	End Length	끝 길이
+	End Percent	끝 퍼센트
+	End Shape	끝 모양
+	By Count	개수 기준
+	By Distance	거리 기준
+	Both	둘 다
+	Shorter Than Length	길이보다 짧은 핸들
+	Anchors	앵커 포인트
+	Dashes to Geometry	대시를 도형으로
+	Dashes to Geometry…	대시를 도형으로…
+	Add Anchors	앵커 포인트 추가
+	Add Anchors…	앵커 포인트 추가…
+	Smooth Anchors	앵커 포인트 매끄럽게
+	Smooth Anchors…	앵커 포인트 매끄럽게…
+	Simplify Anchors	앵커 포인트 단순화
+	Simplify Anchors…	앵커 포인트 단순화…
+	Split at Anchors	앵커 포인트에서 분할
+	Split at Anchors…	앵커 포인트에서 분할…
+	Extend Path…	패스 연장…
+	Close Path…	패스 닫기…
+	Retract Handles…	핸들 접기…
+	Dash 1	대시 1
+	Gap 1	간격 1
+	Dash 2	대시 2
+	Gap 2	간격 2
+	Dash 3	대시 3
+	Gap 3	간격 3
+	Dash 4	대시 4
+	Gap 4	간격 4
+	Dash 5	대시 5
+	Gap 5	간격 5

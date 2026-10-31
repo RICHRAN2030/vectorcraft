@@ -1181,12 +1181,12 @@ lighting	Light	Licht
 	 to set spacing and orientation	 om de tussenruimte en de oriëntatie in te stellen
 	Apply	Toepassen
 	Change Screen Mode (F)	Schermmodus wisselen (F)
-	Color (, or <)	Kleur (, of <)
+	Color (, or Shift+,)	Kleur (, of Shift+,)
 	Draw Behind	Achter tekenen
 	Draw Inside	Binnen tekenen
 	Draw Normal	Normaal tekenen
 	Expand:	Uitvouwen:
-	Gradient (. or >)	Verloop (. of >)
+	Gradient (. or Shift+.)	Verloop (. of Shift+.)
 	H:	H:
 	Modify	Wijzigen
 	Navigate	Navigeren
@@ -1809,7 +1809,6 @@ lighting	Light	Licht
 	Weight:	Dikte:
 	Art using a deleted global swatch keeps its colour.	Artwork met een verwijderd globaal staal behoudt zijn kleur.
 	Color Group: {name}	Kleurgroep: {name}
-	Delete these {count} swatches and groups?	Deze {count} stalen en groepen verwijderen?
 	Delete “{name}”?	„{name}” verwijderen?
 	Document Swatches	Documentstalen
 	Edit or Apply Color Group	Kleurgroep bewerken of toepassen
@@ -3908,6 +3907,7 @@ imageTrace	Outline	Contour
 @plural	{n} item|{n} items	{n} item|{n} items
 @plural	Color Table ({n} color)|Color Table ({n} colors)	Kleurentabel ({n} kleur)|Kleurentabel ({n} kleuren)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	Deze {n} grafische stijl verwijderen?|Deze {n} grafische stijlen verwijderen?
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	Deze {n} staal of groep verwijderen?|Deze {n} stalen en groepen verwijderen?
 @plural	{n} Layer|{n} Layers	{n} laag|{n} lagen
 @plural	{n} Object|{n} Objects	{n} object|{n} objecten
 @plural	{n} area highlighted|{n} areas highlighted	{n} gebied gemarkeerd|{n} gebieden gemarkeerd
@@ -4251,6 +4251,7 @@ imageTrace	Outline	Contour
 @msg	no such perspective grid preset	perspectiefrastervoorinstelling bestaat niet
 @msg	no such recent file	recent bestand bestaat niet
 @msg	no such recent font	recent lettertype bestaat niet
+@msg	some text is hidden or locked, so its font wasn't replaced	een deel van de tekst is verborgen of vergrendeld, dus het lettertype ervan is niet vervangen
 @msg	no such saved selection	opgeslagen selectie bestaat niet
 @msg	no such segment	segment bestaat niet
 @msg	no such subpath	subpad bestaat niet
@@ -5883,6 +5884,17 @@ anchor	Points:	Punten:
 @msg	choose anchors where two sides meet at an angle: only those take a corner	kies ankerpunten waar twee zijden elkaar in een hoek ontmoeten: alleen die kunnen een hoek krijgen
 @msg	give `anchor`, the index of the anchor to slide	geef `anchor` op, de index van het ankerpunt dat moet schuiven
 @msg	that anchor can't slide: an end of an open path has nowhere to go	dat ankerpunt kan niet schuiven: het einde van een open pad kan nergens heen
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	Gereedschap Gedeelde rand samenvoegen
+	Merge Shared Edge	Gedeelde rand samenvoegen
+	Keep Shared Points Together	Gedeelde punten bij elkaar houden
+	Shared Edges	Gedeelde randen
+	Coincidence:	Samenvallen:
+@msg	`a` and `b` must be two different paths	`a` en `b` moeten twee verschillende paden zijn
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter` moet van 0.25 tot 200 pt zijn
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance` moet van 0 tot 3 pt zijn
+@msg	`follow` must be "average", "a" or "b"	`follow` moet "average", "a" of "b" zijn
+@msg	the paths have nothing to merge there	de paden hebben hier niets om samen te voegen
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Tekst splitsen
@@ -5927,3 +5939,43 @@ breakText	Glyphs	Glyphs
 @msg	`by` must be lines, paragraphs, words or glyphs, not {other}	`by` moet lines, paragraphs, words of glyphs zijn, niet {other}
 @msg	`kind` must be "line" or "paragraph", not {other}	`kind` moet "line" of "paragraph" zijn, niet {other}
 @msg	`align` must be "left", "center" or "right", not {other}	`align` moet "left", "center" of "right" zijn, niet {other}
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Path Effects	Padeffecten
+	Reverse Direction	Richting omkeren
+	Align to Corners and Ends	Uitlijnen op hoeken en uiteinden
+	Count	Aantal
+	Max Count	Maximumaantal
+	Start Length	Beginlengte
+	Start Percent	Beginpercentage
+	Start Shape	Beginvorm
+	End Length	Eindlengte
+	End Percent	Eindpercentage
+	End Shape	Eindvorm
+	By Count	Op aantal
+	By Distance	Op afstand
+	Both	Beide
+	Shorter Than Length	Korter dan lengte
+	Dashes to Geometry	Streepjes naar geometrie
+	Dashes to Geometry…	Streepjes naar geometrie…
+	Add Anchors	Ankerpunten toevoegen
+	Add Anchors…	Ankerpunten toevoegen…
+	Smooth Anchors	Ankerpunten gladmaken
+	Smooth Anchors…	Ankerpunten gladmaken…
+	Simplify Anchors	Ankerpunten vereenvoudigen
+	Simplify Anchors…	Ankerpunten vereenvoudigen…
+	Split at Anchors	Splitsen bij ankerpunten
+	Split at Anchors…	Splitsen bij ankerpunten…
+	Extend Path…	Pad verlengen…
+	Close Path…	Pad sluiten…
+	Retract Handles…	Grepen intrekken…
+	Dash 1	Streepje 1
+	Gap 1	Tussenruimte 1
+	Dash 2	Streepje 2
+	Gap 2	Tussenruimte 2
+	Dash 3	Streepje 3
+	Gap 3	Tussenruimte 3
+	Dash 4	Streepje 4
+	Gap 4	Tussenruimte 4
+	Dash 5	Streepje 5
+	Gap 5	Tussenruimte 5

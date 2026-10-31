@@ -1167,12 +1167,12 @@ lighting	Light	Cahaya
 	 to set spacing and orientation	 untuk mengatur jarak dan orientasi
 	Apply	Terapkan
 	Change Screen Mode (F)	Ganti mode layar (F)
-	Color (, or <)	Warna (, atau <)
+	Color (, or Shift+,)	Warna (, atau Shift+,)
 	Draw Behind	Gambar di belakang
 	Draw Inside	Gambar di dalam
 	Draw Normal	Gambar normal
 	Expand:	Perluas:
-	Gradient (. or >)	Gradien (. atau >)
+	Gradient (. or Shift+.)	Gradien (. atau Shift+.)
 	H:	H:
 	Modify	Ubah
 	Navigate	Navigasi
@@ -1795,7 +1795,6 @@ lighting	Light	Cahaya
 	Weight:	Ketebalan:
 	Art using a deleted global swatch keeps its colour.	Karya seni yang memakai swatch global terhapus tetap mempertahankan warnanya.
 	Color Group: {name}	Grup warna: {name}
-	Delete these {count} swatches and groups?	Hapus {count} swatch dan grup ini?
 	Delete “{name}”?	Hapus “{name}”?
 	Document Swatches	Swatch dokumen
 	Edit or Apply Color Group	Edit atau terapkan grup warna
@@ -3894,6 +3893,7 @@ imageTrace	Outline	Kontur
 @plural	{n} item|{n} items	{n} item
 @plural	Color Table ({n} color)|Color Table ({n} colors)	Tabel warna ({n} warna)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	Hapus {n} gaya grafis ini?
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	Hapus {n} swatch dan grup ini?
 @plural	{n} Layer|{n} Layers	{n} lapisan
 @plural	{n} Object|{n} Objects	{n} objek
 @plural	{n} area highlighted|{n} areas highlighted	{n} area disorot
@@ -4239,6 +4239,7 @@ imageTrace	Outline	Kontur
 @msg	no such perspective grid preset	tidak ada preset kisi perspektif seperti itu
 @msg	no such recent file	tidak ada berkas terbaru seperti itu
 @msg	no such recent font	tidak ada font terbaru seperti itu
+@msg	some text is hidden or locked, so its font wasn't replaced	sebagian teks tersembunyi atau terkunci, sehingga fontnya tidak diganti
 @msg	no such saved selection	tidak ada seleksi tersimpan seperti itu
 @msg	no such segment	tidak ada segmen seperti itu
 @msg	no such subpath	tidak ada subjalur seperti itu
@@ -5839,6 +5840,17 @@ anchor	Points:	Titik:
 @msg	choose anchors where two sides meet at an angle: only those take a corner	pilih titik jangkar tempat dua sisi bertemu membentuk sudut: hanya titik itu yang dapat diberi sudut
 @msg	give `anchor`, the index of the anchor to slide	berikan `anchor`, indeks titik jangkar yang akan digeser
 @msg	that anchor can't slide: an end of an open path has nowhere to go	titik jangkar itu tidak dapat digeser: ujung jalur terbuka tidak punya arah tujuan
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	Alat gabung tepi bersama
+	Merge Shared Edge	Gabungkan tepi bersama
+	Keep Shared Points Together	Jaga titik bersama tetap menyatu
+	Shared Edges	Tepi bersama
+	Coincidence:	Kesamaan posisi:
+@msg	`a` and `b` must be two different paths	`a` dan `b` harus dua jalur yang berbeda
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter` harus dari 0.25 hingga 200 pt
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance` harus dari 0 hingga 3 pt
+@msg	`follow` must be "average", "a" or "b"	`follow` harus "average", "a" atau "b"
+@msg	the paths have nothing to merge there	tidak ada yang dapat digabungkan dari jalur di sini
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	Pisahkan teks
@@ -5883,3 +5895,43 @@ breakText	Glyphs	Glif
 @msg	`by` must be lines, paragraphs, words or glyphs, not {other}	`by` harus lines, paragraphs, words, atau glyphs, bukan {other}
 @msg	`kind` must be "line" or "paragraph", not {other}	`kind` harus "line" atau "paragraph", bukan {other}
 @msg	`align` must be "left", "center" or "right", not {other}	`align` harus "left", "center", atau "right", bukan {other}
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Path Effects	Efek jalur
+	Reverse Direction	Balikkan arah
+	Align to Corners and Ends	Sejajarkan ke sudut dan ujung
+	Count	Jumlah
+	Max Count	Jumlah maksimum
+	Start Length	Panjang awal
+	Start Percent	Persen awal
+	Start Shape	Bentuk awal
+	End Length	Panjang akhir
+	End Percent	Persen akhir
+	End Shape	Bentuk akhir
+	By Count	Menurut jumlah
+	By Distance	Menurut jarak
+	Both	Keduanya
+	Shorter Than Length	Lebih pendek dari panjang
+	Dashes to Geometry	Garis putus ke geometri
+	Dashes to Geometry…	Garis putus ke geometri…
+	Add Anchors	Tambahkan titik jangkar
+	Add Anchors…	Tambahkan titik jangkar…
+	Smooth Anchors	Haluskan titik jangkar
+	Smooth Anchors…	Haluskan titik jangkar…
+	Simplify Anchors	Sederhanakan titik jangkar
+	Simplify Anchors…	Sederhanakan titik jangkar…
+	Split at Anchors	Pisahkan di titik jangkar
+	Split at Anchors…	Pisahkan di titik jangkar…
+	Extend Path…	Perpanjang jalur…
+	Close Path…	Tutup jalur…
+	Retract Handles…	Tarik masuk pegangan…
+	Dash 1	Garis 1
+	Gap 1	Jarak 1
+	Dash 2	Garis 2
+	Gap 2	Jarak 2
+	Dash 3	Garis 3
+	Gap 3	Jarak 3
+	Dash 4	Garis 4
+	Gap 4	Jarak 4
+	Dash 5	Garis 5
+	Gap 5	Jarak 5

@@ -180,6 +180,10 @@ pub struct DirectSelectionTool {
     guides: Vec<Overlay>,
     /// What the dragged anchors snap to, gathered when the drag begins.
     anchor_snap: Option<PointSnap>,
+    /// With one open path's end anchor dragged along a straight segment, that segment's other end:
+    /// the dragged end may land square to a straight path or grazing a curve (Smart Guides ›
+    /// Geometric Guides). Set when the drag begins.
+    line_end: Option<Leave>,
     /// What the anchor holding paths moved whole snaps to while Alt makes a copy: the original left
     /// behind too. Gathered with [`Self::anchor_snap`], before the previews move the original.
     copy_snap: Option<PointSnap>,
@@ -227,6 +231,7 @@ impl DirectSelectionTool {
             mesh: MeshEdit::default(),
             guides: vec![],
             anchor_snap: None,
+            line_end: None,
             copy_snap: None,
             handle_snap: HandleSnap::default(),
             move_snap: None,
@@ -404,6 +409,38 @@ fn anchor_owners(cx: &ToolContext, f: fn(&Node) -> bool) -> Vec<NodeId> {
     let editable = cx.doc.editable();
     v.retain(|id| editable(*id));
     v
+}
+
+/// Where a line's end anchor `grab`bed for a drag leaves from, when it is one: the only anchor
+/// selected, the end of an open subpath whose one segment is straight, and no other art moving
+/// with it. That segment's other end stays put, so the end snaps square to straight paths and
+/// grazing curves; mid-line anchors and ends of curved segments do not (Illustrator limits Snap
+/// to Tangent and Snap to Perpendicular to line endpoints).
+fn line_end_leave(cx: &ToolContext, grab: Point) -> Option<Leave> {
+    let sel = cx.selection;
+    if !sel.segments.is_empty() || sel.anchors.len() != 1 {
+        return None;
+    }
+    let (&id, set) = sel.anchors.iter().next()?;
+    if set.len() != 1 || sel.objects.iter().any(|o| *o != id) {
+        return None;
+    }
+    let &(si, ai) = set.iter().next()?;
+    let sp = cx.doc.node(id)?.path_data()?.subpaths.get(si)?;
+    let n = sp.anchors.len();
+    if sp.closed || ai >= n || sp.anchors[ai].p.distance(grab) > 1e-6 {
+        return None;
+    }
+    let (other, seg) = if n < 2 {
+        return None;
+    } else if ai == 0 {
+        (1, 0)
+    } else if ai == n - 1 {
+        (n - 2, n - 2)
+    } else {
+        return None;
+    };
+    sp.segment_is_line(seg).then(|| Leave::contact(sp.anchors[other].p))
 }
 
 /// The anchor within `tol` of `p` nearest to it, of the topmost selected path or area type frame
@@ -1230,6 +1267,7 @@ impl DirectSelectionTool {
             out.push(Action::Begin("Move".into()));
             self.state = State::MoveAnchors { start, grab, began: true };
             self.anchor_snap = Some(PointSnap::new(cx, || Targets::for_anchor_drag(cx.doc, cx.selection)));
+            self.line_end = line_end_leave(cx, grab);
         }
         let mut d = move_delta(start, p, ev.mods.shift, cx.constrain_angle);
         let unsnapped = d;
@@ -1238,7 +1276,7 @@ impl DirectSelectionTool {
         self.guides.clear();
         if let Some(snap) = &self.anchor_snap {
             let shift = ev.mods.shift.then(|| Leave::segment(cx, grab, true));
-            let (q, guides) = snap.snap_from(cx, grab + (p - start), shift.as_ref());
+            let (q, guides) = snap.snap_from(cx, grab + (p - start), shift.as_ref().or(self.line_end.as_ref()));
             (d, self.guides) = (q - grab, guides);
         }
         self.snapped = snapped(d, unsnapped, ev.mods.shift, &self.guides);

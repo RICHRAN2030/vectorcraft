@@ -498,7 +498,7 @@ font-technology	Variable	可變
 	Collect in New Layer	收集至新圖層
 	Collect Links in a Separate Folder	將連結收集到獨立的資料夾
 	Color	顏色
-	Color (, or <)	顏色 (, 或 <)
+	Color (, or Shift+,)	顏色 (, 或 Shift+,)
 	Color Adjustments	色彩調整
 	Color bars	色彩條
 	Color blindness – Deuteranopia-type	色盲 – 綠色盲型
@@ -736,7 +736,6 @@ font-technology	Variable	可變
 	Delete the graphic style “{name}”?	要刪除繪圖樣式「{name}」嗎？
 	Delete Theme	刪除主題
 	Delete theme	刪除主題
-	Delete these {count} swatches and groups?	要刪除這 {count} 個色票和群組嗎？
 	Delete these {n} graphic styles?	要刪除這 {n} 個繪圖樣式嗎？
 	Delete this saved preset	刪除此已儲存的預設集
 	Delete this {n} graphic style?	要刪除這 {n} 個繪圖樣式嗎？
@@ -1274,7 +1273,7 @@ file-filter	Templates	範本
 	GPL palettes keep solid colours only, as RGB.	GPL 調色盤僅保留純色，並以 RGB 儲存。
 	GPU Performance	GPU 效能
 	Gradient	漸層
-	Gradient (. or >)	漸層 (. 或 >)
+	Gradient (. or Shift+.)	漸層 (. 或 Shift+.)
 	Gradient across stroke	橫跨筆畫的漸層
 	Gradient along stroke	沿筆畫的漸層
 	Gradient and Mesh Resolution:	漸層與網格解析度：
@@ -2229,6 +2228,7 @@ file-filter	Templates	範本
 @msg	no such perspective grid preset	沒有這個透視格點預設集
 @msg	no such recent file	沒有這個最近使用的檔案
 @msg	no such recent font	沒有這個最近使用的字體
+@msg	some text is hidden or locked, so its font wasn't replaced	部分文字已隱藏或鎖定，因此其字體未被取代
 @msg	no such saved selection	沒有這個已儲存的選取範圍
 @msg	no such user library	沒有這個使用者資料庫
 @msg	no such view	沒有這個檢視
@@ -4569,6 +4569,7 @@ imageTrace	Outline	輪廓
 @plural	{n} item|{n} items	{n} 個項目
 @plural	Color Table ({n} color)|Color Table ({n} colors)	色彩表 ({n} 色)
 @plural	Delete this {n} graphic style?|Delete these {n} graphic styles?	要刪除這 {n} 個繪圖樣式嗎？
+@plural	Delete this {n} swatch or group?|Delete these {n} swatches and groups?	要刪除這 {n} 個色票和群組嗎？
 @plural	{n} Layer|{n} Layers	{n} 個圖層
 @plural	{n} Object|{n} Objects	{n} 個物件
 @plural	{n} area highlighted|{n} areas highlighted	已標示 {n} 個區域
@@ -5578,6 +5579,17 @@ anchor	Points:	點：
 @msg	choose anchors where two sides meet at an angle: only those take a corner	請選取兩邊成角相交的錨點：只有這些錨點才能設定轉角
 @msg	give `anchor`, the index of the anchor to slide	請提供 `anchor`，即要滑動的錨點索引
 @msg	that anchor can't slide: an end of an open path has nowhere to go	該錨點無法滑動：開放路徑的端點無處可去
+# Path Precision Tools add-on: the Shared Edge Merge Tool and Keep Shared Points Together.
+	Shared Edge Merge Tool	共用邊合併工具
+	Merge Shared Edge	合併共用邊
+	Keep Shared Points Together	保持共用點在一起
+	Shared Edges	共用邊
+	Coincidence:	重合容差：
+@msg	`a` and `b` must be two different paths	`a` 和 `b` 必須是兩條不同的路徑
+@msg	`diameter` must be from 0.25 to 200 pt	`diameter` 必須為 0.25 到 200 pt
+@msg	`tolerance` must be from 0 to 3 pt	`tolerance` 必須為 0 到 3 pt
+@msg	`follow` must be "average", "a" or "b"	`follow` 必須是 "average"、"a" 或 "b"
+@msg	the paths have nothing to merge there	這裡沒有可合併的路徑部分
 
 # Artwork Cleanup add-on: its text tools (Object › Plug-ins › Artwork Cleanup and the panel's Text row) and their messages.
 	Break Text	分割文字
@@ -5622,3 +5634,44 @@ breakText	Glyphs	字符
 @msg	`by` must be lines, paragraphs, words or glyphs, not {other}	`by` 必須是 lines、paragraphs、words 或 glyphs，而不是 {other}
 @msg	`kind` must be "line" or "paragraph", not {other}	`kind` 必須是 "line" 或 "paragraph"，而不是 {other}
 @msg	`align` must be "left", "center" or "right", not {other}	`align` 必須是 "left"、"center" 或 "right"，而不是 {other}
+
+# Path Precision Tools add-on: Path Effects (Effect › Path Effects).
+	Path Effects	路徑效果
+	Reverse Direction	反轉方向
+	Align to Corners and Ends	對齊轉角和端點
+	Count	數量
+	Max Count	最大數量
+	Start Length	起點長度
+	Start Percent	起點百分比
+	Start Shape	起點形狀
+	End Length	終點長度
+	End Percent	終點百分比
+	End Shape	終點形狀
+	By Count	依數量
+	By Distance	依距離
+	Both	兩者
+	Shorter Than Length	短於長度
+	Anchors	錨點
+	Dashes to Geometry	虛線轉為幾何圖形
+	Dashes to Geometry…	虛線轉為幾何圖形…
+	Add Anchors	增加錨點
+	Add Anchors…	增加錨點…
+	Smooth Anchors	平滑錨點
+	Smooth Anchors…	平滑錨點…
+	Simplify Anchors	簡化錨點
+	Simplify Anchors…	簡化錨點…
+	Split at Anchors	在錨點處分割
+	Split at Anchors…	在錨點處分割…
+	Extend Path…	延長路徑…
+	Close Path…	封閉路徑…
+	Retract Handles…	收回控制把手…
+	Dash 1	虛線 1
+	Gap 1	間隙 1
+	Dash 2	虛線 2
+	Gap 2	間隙 2
+	Dash 3	虛線 3
+	Gap 3	間隙 3
+	Dash 4	虛線 4
+	Gap 4	間隙 4
+	Dash 5	虛線 5
+	Gap 5	間隙 5
