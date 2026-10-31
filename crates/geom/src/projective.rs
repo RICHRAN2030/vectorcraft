@@ -99,6 +99,13 @@ impl Homography {
         Self(out)
     }
 
+    /// [`Self::then_after`]; `None` when an entry of the product is not finite (an entry
+    /// overflows, or a factor has one that is not finite).
+    pub fn checked_then_after(&self, other: &Self) -> Option<Self> {
+        let c = self.then_after(other);
+        c.is_finite().then_some(c)
+    }
+
     /// `self` seen through `a`: the map `a ∘ self ∘ a⁻¹` (what `self` becomes when everything it
     /// maps from and to is moved by `a`). When the product overflows, every entry is formed with
     /// its powers of two kept apart, and the product is returned divided by the largest magnitude
@@ -265,6 +272,19 @@ mod tests {
         let big = Homography([[1e300, 0.0, 0.0], [0.0, 1e300, 0.0], [0.0, 0.0, 1e-310]]);
         assert_eq!(big.inverse(), None);
         assert!(h().inverse().is_some());
+    }
+
+    #[test]
+    fn a_product_that_overflows_is_none() {
+        // Each factor is finite and invertible, but the product's first entry is 1e400.
+        let big = Homography([[1e200, 0.0, 0.0], [0.0, 1e200, 0.0], [0.0, 0.0, 1e200]]);
+        assert!(Homography::from_array(big.to_array()).is_some());
+        assert_eq!(big.checked_then_after(&big), None);
+        let nan = Homography([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, f64::NAN]]);
+        assert_eq!(h().checked_then_after(&nan), None);
+        assert_eq!(h().checked_then_after(&Homography::IDENTITY), Some(h()));
+        let inv = h().inverse().unwrap();
+        assert_eq!(h().checked_then_after(&inv), Some(h().then_after(&inv)));
     }
 
     #[test]

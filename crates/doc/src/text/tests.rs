@@ -60,6 +60,18 @@ fn digits_map_between_the_numeral_systems() {
     assert_eq!(serde_json::from_value::<CharStyle>(serde_json::to_value(&farsi).unwrap()).unwrap(), farsi);
 }
 
+/// Language is saved only when set; styles written before it existed read as the default.
+#[test]
+fn language_is_saved_only_when_set() {
+    let st = CharStyle::default();
+    let old = serde_json::to_value(&st).unwrap();
+    assert!(old.get("language").is_none());
+    assert_eq!(serde_json::from_value::<CharStyle>(old).unwrap().language, None);
+    let turkish = CharStyle { language: Some("tr".into()), ..CharStyle::default() };
+    assert_eq!(serde_json::to_value(&turkish).unwrap()["language"], "tr");
+    assert_eq!(serde_json::from_value::<CharStyle>(serde_json::to_value(&turkish).unwrap()).unwrap(), turkish);
+}
+
 /// Auto leading follows the paragraph's Auto Leading; a set leading doesn't.
 #[test]
 fn paragraph_effective_leading_follows_auto_leading() {

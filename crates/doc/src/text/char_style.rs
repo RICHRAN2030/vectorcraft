@@ -25,9 +25,12 @@ pub struct CharStyle {
     /// Tracking in 1/1000 em.
     #[serde(default)]
     pub tracking: f64,
-    /// Kerning: None = Auto (metrics), Some(v) = manual in 1/1000 em.
+    /// Manual pair spacing in 1/1000 em; None uses the automatic mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kerning: Option<f64>,
+    /// Use glyph shapes for automatic pair spacing; false uses font metrics.
+    #[serde(default, rename = "opticalKerning", skip_serializing_if = "crate::skip::is_default")]
+    pub optical_kerning: bool,
     #[serde(default)]
     pub baseline_shift: f64,
     #[serde(default = "hundred")]
@@ -111,6 +114,12 @@ pub struct CharStyle {
     /// <https://helpx.adobe.com/illustrator/using/hyphenation-line-breaks.html>
     #[serde(default, rename = "noBreak", skip_serializing_if = "crate::skip::is_default")]
     pub no_break: bool,
+    /// Language (Character panel): the BCP 47 tag of one of [`crate::setup::LANGUAGES`] these
+    /// characters are shaped in, so that the font uses that language's forms (OpenType `locl`).
+    /// `None`: the default language, English: USA, shaped without a language. New type takes the
+    /// document's language (Document Setup). Saved only when set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
 }
 
 /// The numeral system digits are drawn in ([`CharStyle::digits`]): as typed, or every digit of
@@ -266,6 +275,7 @@ impl Default for CharStyle {
             leading: None,
             tracking: 0.0,
             kerning: None,
+            optical_kerning: false,
             baseline_shift: 0.0,
             h_scale: 100.0,
             v_scale: 100.0,
@@ -293,6 +303,7 @@ impl Default for CharStyle {
             small_caps: None,
             digits: Digits::Default,
             no_break: false,
+            language: None,
         }
     }
 }

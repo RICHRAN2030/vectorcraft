@@ -869,6 +869,22 @@ fn node_thumbnail_applies_the_root_mask() {
     assert_eq!(img.pixel(75, 50), [255, 255, 255, 255]);
 }
 
+/// #3602: a thumbnail reports the size it was drawn at, and one too small for its 1-pixel margin
+/// still draws the art.
+#[test]
+fn node_thumbnail_reports_the_size_it_draws() {
+    let mut d = Document::new(100.0, 100.0);
+    let node = rect_node(&mut d, Rect::new(10.0, 10.0, 90.0, 90.0), Paint::solid(Color::rgb(1.0, 0.0, 0.0)), Paint::None, 0.0);
+    let mut r = Renderer::new();
+    for size in 0..4 {
+        let img = r.render_node_thumbnail(&d, &node, size, None).unwrap();
+        assert_eq!(img.pixels.len(), img.width as usize * img.height as usize * 4, "size {size}");
+        assert_eq!(img.width, size.max(1), "size {size}");
+        assert_eq!(img.height, size.max(1), "size {size}");
+        assert!(img.pixels.chunks(4).any(|p| p[3] > 0), "size {size}: the art is drawn");
+    }
+}
+
 #[test]
 fn opacity_mask_with_undecodable_image_leaves_out_object() {
     use vectorcraft_doc::{Effect, ImageBlob, ImageObject, NodeKind, OpacityMask};

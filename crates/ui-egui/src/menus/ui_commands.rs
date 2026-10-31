@@ -13,6 +13,12 @@ pub const UI_COMMANDS: &[(&str, &str, &str, &str)] = &[
         "{} choose the Shared Edge Merge Tool and show the Anchor Inspector panel with its brush, coincidence and Keep Shared Points Together",
     ),
     (
+        crate::addons::arrange::ZOOM,
+        "Zoom to Selection",
+        "",
+        "{} zoom and centre the active view so the selection's visual bounds fill the window, with a margin (as view.fitArtboard fits the artboard); off with nothing selected",
+    ),
+    (
         "app.language",
         "Interface Language",
         "",
@@ -652,6 +658,18 @@ pub const UI_COMMANDS: &[(&str, &str, &str, &str)] = &[
         "{name?} open Graphic Style Options (dialog `graphicStyleOptions`, field `name`): for style `name` OK renames it (graphicStyle.rename); without, OK makes a new style of that name from the selection (graphicStyle.new)",
     ),
     (
+        "ui.charStyleOptions",
+        "Character Style Options",
+        "",
+        "{name} open Character Style Options (dialog `charStyleOptions`); OK runs charStyle.edit with name, to and sparse attrs in one undo step; Cancel restores a live preview",
+    ),
+    (
+        "ui.charStyleOptions.resetPanel",
+        "Reset Panel",
+        "",
+        "{} clear the Basic Character Formats settings in the open Character Style Options or New Character Style dialog; available only on that section",
+    ),
+    (
         "ui.newCharStyle",
         "New Character Style…",
         "",
@@ -922,7 +940,7 @@ pub const UI_COMMANDS: &[(&str, &str, &str, &str)] = &[
         "ui.menuDialog",
         "Menu Dialog",
         "",
-        "{command: object.move|object.rotate|object.scale|object.reflect|object.shear|object.transformEach|path.average|path.averageJoin|object.path.offsetPath|object.path.simplify|object.path.smooth|object.path.splitIntoGrid|object.vectorHalftone|artboard.rearrange|object.envelope.makeWithWarp|object.envelope.resetWithWarp|object.envelope.makeWithMesh|object.envelope.resetWithMesh|object.envelope.options} open the dialog that command's menu item opens (dialog kind: move, rotate, scale, reflect, shear, transformEach, …, vectorHalftone, rearrangeArtboards, envelopeWarp, envelopeMesh, envelopeOptions; Scale and Transform Each have `corners` and `strokes`, from the preferences, which OK updates; Transform Each opens on the values it was last confirmed with (not `copy`), and its Copy button confirms with `copy: true`; the envelope dialogs start from the selected envelope, Make opens as Reset (`reset: true`) while one is selected)",
+        "{command: object.move|object.rotate|object.scale|object.reflect|object.shear|object.transformEach|path.average|path.averageJoin|object.path.offsetPath|object.path.simplify|object.path.smooth|object.path.splitIntoGrid|object.vectorHalftone|artboard.rearrange|object.envelope.makeWithWarp|object.envelope.resetWithWarp|object.envelope.makeWithMesh|object.envelope.resetWithMesh|object.envelope.options|addon.arrange.grid|addon.arrange.replace|addon.arrange.size} open the dialog that command's menu item opens (dialog kind: move, rotate, scale, reflect, shear, transformEach, …, vectorHalftone, rearrangeArtboards, envelopeWarp, envelopeMesh, envelopeOptions, arrangeGrid, arrangeReplace, arrangeSize; Scale and Transform Each have `corners` and `strokes`, from the preferences, which OK updates; Transform Each opens on the values it was last confirmed with (not `copy`), and its Copy button confirms with `copy: true`; the envelope dialogs start from the selected envelope, Make opens as Reset (`reset: true`) while one is selected)",
     ),
     (
         "ui.widthPointEdit",

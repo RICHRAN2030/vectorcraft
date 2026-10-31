@@ -108,7 +108,7 @@ fn ids_json(ids: &[NodeId]) -> Value {
 pub(crate) fn effect_targets(s: &Session, p: &Value, item: ItemTarget, index: usize, cmd: &str) -> Result<Vec<(NodeId, Option<usize>, usize)>> {
     let roots = appearance_targets(s, p)?;
     let d = &s.doc()?.doc;
-    let per = item.per_target(d, &roots);
+    let per = item.per_target(s, &roots);
     let shared = if aligned(p) { shared_stack(d, &roots) } else { None };
     let mut out = Vec::with_capacity(roots.len());
     for (k, (id, item)) in roots.iter().zip(per).enumerate() {
@@ -219,8 +219,9 @@ pub(crate) fn apply(s: &mut Session, p: &Value) -> Result<Value> {
         index = fx.len() - 1;
         true
     })?;
-    // The item the effect landed on in the first object (the active item applies where it fits).
-    let first = ids.first().and_then(|id| s.doc().ok()?.doc.node(*id));
+    // The item the effect landed on in the object whose row the item is (the first selected object
+    // for the active item, which applies where it fits).
+    let first = ids.get(item.anchor(s, &ids)).and_then(|id| s.doc().ok()?.doc.node(*id));
     let landed = first.and_then(|n| item.effects_item(&n.appearance, C).ok().flatten());
     Ok(json!({ "ids": ids_json(&ids), "index": index, "item": landed }))
 }
